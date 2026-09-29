@@ -10,6 +10,15 @@
   },
   "plugins": [
     {
+      "name": "customer-intelligence",
+      "description": "Use when the user asks for a \"customer intelligence dashboard\", \"hidden trends analysis\", \"campaign profitability assessment\", \"cross-division analysis\", \"churn analysis dashboard\", \"campaign ROI analysis\", or wants to combine trend discovery with campaign profitability evaluation and segment recommendations. Also triggers on \"analyze my parent segment\", \"find hidden patterns in customer data\", \"which campaigns should I invest in\", or \"show me customer insights\".",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./customer-intelligence"
+      ]
+    },
+    {
       "name": "omni-channel-reporting",
       "description": "Use when the user asks for \"omni-channel report\", \"marketing performance dashboard\", \"channel performance analysis\", \"ROAS analysis\", \"CTR analysis\", \"campaign performance report\", \"media mix analysis\", \"marketing dashboard\", \"channel comparison\", or wants to analyze marketing spend, revenue, and performance across channels (email, Facebook, paid search, SMS, display, video). Also trigger on \"marketing analytics\", \"campaign ROI\", \"segment performance by channel\", or \"marketing trends\".",
       "source": "./",
