@@ -1,6 +1,15 @@
 ---
 name: customer-intelligence
-description: Use when the user asks for a "customer intelligence dashboard", "hidden trends analysis", "campaign profitability assessment", "cross-division analysis", "churn analysis dashboard", "campaign ROI analysis", "segment overlap", or wants to combine trend discovery with campaign profitability evaluation and segment recommendations. Also triggers on "analyze my parent segment", "find hidden patterns in customer data", "which campaigns should I invest in", or "show me customer insights". Generates a unified React dashboard with three integrated views in a single render_react call: (1) Buried Treasure with cross-division pattern discovery, (2) Campaign Profitability with ROI-ranked investment recommendations, and (3) Segment Overlap with unsegmented customer analysis and segment-to-build recommendations.
+description: >-
+  Use when the user asks for a "customer intelligence dashboard", "hidden trends analysis",
+  "campaign profitability assessment", "cross-division analysis", "churn analysis dashboard",
+  "campaign ROI analysis", "segment overlap", or wants to combine trend discovery with campaign
+  profitability evaluation and segment recommendations. Also triggers on "analyze my parent segment",
+  "find hidden patterns in customer data", "which campaigns should I invest in", or "show me customer
+  insights". Generates a unified React dashboard with three integrated views in a single render_react
+  call: (1) Buried Treasure with cross-division pattern discovery, (2) Campaign Profitability with
+  ROI-ranked investment recommendations, and (3) Segment Overlap with unsegmented customer analysis
+  and segment-to-build recommendations.
 ---
 
 # Customer Intelligence Suite
