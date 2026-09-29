@@ -1,0 +1,22 @@
+{
+  "name": "agentic-world-2026",
+  "owner": {
+    "name": "Greg Lawrence",
+    "email": "greg.lawrence@treasure-data.com"
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Agentic World 2026 skills for Treasure AI Studio"
+  },
+  "plugins": [
+    {
+      "name": "omni-channel-reporting",
+      "description": "Use when the user asks for \"omni-channel report\", \"marketing performance dashboard\", \"channel performance analysis\", \"ROAS analysis\", \"CTR analysis\", \"campaign performance report\", \"media mix analysis\", \"marketing dashboard\", \"channel comparison\", or wants to analyze marketing spend, revenue, and performance across channels (email, Facebook, paid search, SMS, display, video). Also trigger on \"marketing analytics\", \"campaign ROI\", \"segment performance by channel\", or \"marketing trends\".",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./omni-channel-reporting"
+      ]
+    }
+  ]
+}
