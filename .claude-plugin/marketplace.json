@@ -1,11 +1,11 @@
 {
   "name": "agentic-world-2026",
   "owner": {
-    "name": "Greg Lawrence",
-    "email": "greg.lawrence@treasure-data.com"
+    "name": "Alex Vo",
+    "email": "alex.vo@treasure.ai"
   },
   "metadata": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Agentic World 2026 skills for Treasure AI Studio"
   },
   "plugins": [
