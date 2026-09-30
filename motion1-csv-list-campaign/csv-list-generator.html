@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Create your workshop email | Agentic World</title>
+  <style>
+    :root { color-scheme:light; --brand:#494FFF; --ink:#202236; --muted:#555a70; --line:#e3e5ee; font-family:Inter,Arial,sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#f6f7fb; line-height:1.7; }
+    header { background:white; border-bottom:1px solid var(--line); padding:20px max(24px,calc((100vw - 1000px)/2)); }
+    header strong { font-family:Manrope,Inter,sans-serif; letter-spacing:.08em; }
+    main { max-width:1000px; margin:auto; padding:48px 24px; }
+    h1,h2 { font-family:Manrope,Inter,Arial,sans-serif; line-height:1.3; }
+    h1 { font-size:clamp(32px,5vw,50px); margin:12px 0 24px; }
+    h1 span,.eyebrow { color:var(--brand); }
+    .eyebrow { font-weight:700; font-size:13px; letter-spacing:.07em; }
+    .intro { max-width:720px; color:var(--muted); }
+    .journey { list-style:none; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin:32px 0; }
+    .journey li { padding:22px 18px; background:white; border:1px solid var(--line); border-radius:16px; }
+    .number { width:32px; height:32px; border-radius:50%; background:#eef0ff; color:var(--brand); display:grid; place-items:center; font-weight:700; }
+    .journey h2 { font-size:17px; margin:16px 0 8px; }
+    .journey p { color:var(--muted); font-size:14px; margin:0; }
+    .request,.notice { background:white; padding:24px; border:1px solid var(--line); border-radius:16px; margin-top:22px; }
+    .request { border-left:5px solid var(--brand); }
+    .request h2,.notice h2 { font-size:22px; margin:0 0 12px; }
+    blockquote { margin:0; }
+    .note { font-size:13px; color:var(--muted); }
+    footer { margin-top:32px; border-top:1px solid var(--line); padding-top:20px; color:var(--muted); font-size:12px; }
+    a { color:var(--brand); }
+    a:focus-visible { outline:3px solid #9699ff; outline-offset:3px; }
+  </style>
+</head>
+<body>
+  <header><strong>AGENTIC WORLD</strong> · Motion 1 Workshop</header>
+  <main>
+    <div class="eyebrow">YOUR IDEA. YOUR EMAIL. YOUR INBOX.</div>
+    <h1>Create something personal.<br><span>One conversation at a time.</span></h1>
+    <p class="intro">Choose a template, add your name and favorite details, and let AI Studio handle the setup. You review the finished email and decide when to send it to yourself.</p>
+    <ol class="journey" aria-label="Five workshop steps">
+      <li><span class="number">1</span><h2>Add yourself</h2><p>Share your name, email, and the details you want personalized.</p></li>
+      <li><span class="number">2</span><h2>Create the email</h2><p>Choose a template and a name for your one-off campaign.</p></li>
+      <li><span class="number">3</span><h2>Preview</h2><p>Check the message, personalization, recipient, and sender.</p></li>
+      <li><span class="number">4</span><h2>Approve and send</h2><p>Approve the exact one-time email to your own address.</p></li>
+      <li><span class="number">5</span><h2>Check your inbox</h2><p>Confirm the launch status, then look for your email.</p></li>
+    </ol>
+    <section class="request" aria-labelledby="request-title">
+      <h2 id="request-title">Start with a simple request</h2>
+      <blockquote>“In Agentic World Workspace, use [template] and my profile to create a one-off campaign named Agentic World Engage Workshop.firstname.lastname. Show me the preview, then send it to me after I approve.”</blockquote>
+      <p class="note">No profile CSV yet? AI Studio will ask for only the details needed and confirm before saving them to your approved Work Folder. If you already have a CSV, include its name.</p>
+    </section>
+    <section class="notice" aria-labelledby="notice-title">
+      <h2 id="notice-title">You make the final call</h2>
+      <p>Saving your profile does not send anything. After you review the exact email and recipient, your final approval lets the Skill launch that campaign once.</p>
+      <p class="note">Use real details only in an approved workshop. Fictional profiles let you preview without sending. This page has no profile-entry fields or send controls and does not collect your data.</p>
+    </section>
+    <footer>Static participant guide · Not a live campaign-status page · Performance reporting is outside this workshop version<br>💎 Generated with <a href="https://github.com/treasure-work">Treasure Work</a></footer>
+  </main>
+</body>
+</html>
