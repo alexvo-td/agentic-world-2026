@@ -5,7 +5,7 @@
     "email": "alex.vo@treasure.ai"
   },
   "metadata": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Agentic World 2026 skills for Treasure AI Studio"
   },
   "plugins": [
@@ -25,6 +25,33 @@
       "strict": false,
       "skills": [
         "./omni-channel-reporting"
+      ]
+    },
+    {
+      "name": "motion1-csv-list-campaign",
+      "description": "Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after approval. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, approval-gated launch, and status read-back for the exact generated campaign. Reuse tdx 2026.9.2 prepared by motion1-profile-csv-intake. Performance reporting is excluded from this version.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./motion1-csv-list-campaign"
+      ]
+    },
+    {
+      "name": "motion1-profile-csv-intake",
+      "description": "Use when a Motion 1 workshop participant wants to add themselves to a sample audience, create a profile CSV, or try personalized email with synthetic data. Collect email, first name, last name, and only fields needed for personalization; save a reviewed CSV in the approved Work Folder. Bootstrap tdx 2026.9.2 here when continuing to campaign setup. Hand campaign creation and delivery to motion1-csv-list-campaign.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./motion1-profile-csv-intake"
+      ]
+    },
+    {
+      "name": "html-to-beefree",
+      "description": "Use when the user wants to convert an HTML email into a BeeFree visual template in Treasure Engage, import HTML into the visual editor, push HTML as a drag-and-drop template, or says \"create a visual template from this HTML\". Converts raw HTML emails into BeeFree's proprietary JSON format and pushes via the Engage API so the template opens with fully editable blocks in the visual editor.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./html-to-beefree"
       ]
     }
   ]
