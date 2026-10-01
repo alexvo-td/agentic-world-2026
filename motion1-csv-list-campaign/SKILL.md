@@ -1,6 +1,6 @@
 ---
 name: motion1-csv-list-campaign
-description: Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after approval. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, approval-gated launch, and status read-back for the exact generated campaign. Reuse tdx 2026.9.2 prepared by motion1-profile-csv-intake. Performance reporting is excluded from this version.
+description: Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after approval. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, approval-gated launch, and status read-back for the exact generated campaign. Reuse tdx 2026.9.2 prepared by agenticworld-profile-csv-intake. Performance reporting is excluded from this version.
 ---
 
 # Motion 1 — Create your email and receive it
@@ -11,7 +11,7 @@ This Skill supports an approved workshop send. Once the exact message, recipient
 
 ## Responsibilities and scope
 
-- CSV intake and initial tdx setup belong to `motion1-profile-csv-intake`. TD staging, campaign setup, final approval, launch, and status read-back belong here
+- CSV intake and initial tdx setup belong to `agenticworld-profile-csv-intake`. TD staging, campaign setup, final approval, launch, and status read-back belong here
 - ListCampaign references an existing contact-list table. It does not upload CSV directly or create a CDP Audience, Parent Segment, or child segment. Call it the participant's “email recipient list”
 - Read `references/api-contract.md` before remote operations and `references/template-and-merge-tags.md` for content. Operators use `operator-checklist.md`
 - Do not reuse standard campaign `audience`, `segment`, `connector`, or `profile.*` settings for ListCampaign
@@ -22,7 +22,7 @@ This Skill supports an approved workshop send. Once the exact message, recipient
 
 Default to **Agentic World Workspace**, while verifying the actual account and workspace. Preserve the participant's campaign name and template. If needed, suggest `Agentic World Engage Workshop.firstname.lastname` for confirmation. Never reuse sample names or environment-bound IDs
 
-Require a saved CSV path and non-PII handoff. If missing, invoke `motion1-profile-csv-intake` with the existing answers. Only offer a follow-up prompt if invocation is unavailable. Do not collect real rows again here
+Require a saved CSV path and non-PII handoff. If missing, invoke `agenticworld-profile-csv-intake` with the existing answers. Only offer a follow-up prompt if invocation is unavailable. Do not collect real rows again here
 
 Verify data mode, collection/retention/destination approvals, self-send opt-in, columns/count/key, blank/time policy, approved limits, and prepared runner. Revalidate the saved file. Ask about topic, tone, or CTA only when missing; do not make participants configure YAML or mappings
 

@@ -6,7 +6,7 @@ Turn your reviewed profile CSV and chosen template into a personalized workshop 
 
 > “In Agentic World Workspace, create a one-off campaign named Agentic World Engage Workshop.firstname.lastname using [template] and [CSV]. Show me the preview, then send it to me after I approve.”
 
-If your CSV is not ready, begin with `motion1-profile-csv-intake`. You do not need to repeat answers already collected
+If your CSV is not ready, begin with `agenticworld-profile-csv-intake`. You do not need to repeat answers already collected
 
 ## Participant journey
 

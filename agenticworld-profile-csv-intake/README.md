@@ -14,9 +14,9 @@ Saving the CSV does not send an email. The campaign Skill shows the completed me
 ## Operator notes
 
 - Confirm chat collection/retention, Work Folder access, and downstream TD query/job-history exposure before real data intake
-- Self-send uses one participant-owned, opted-in address. Fictional `example.test` rows are preview-only
+- The default sendable file contains one participant-owned, opted-in address plus 30 approved test recipients. `example.test` profiles are preview-only; simulator recipients do not provide a human inbox
 - Preserve original sample files and save a new version. Do not mix other participants or fictional rows into the live self-send list
-- This Skill bootstraps and verifies tdx `2026.9.2` before campaign setup; never install globally
+- Before campaign setup, verify the existing tdx version is `2026.9.3`; do not reinstall a correct runtime or install globally
 - Do not query TD, prepare SQL, create tables/campaigns, or send here. Pass only a saved path and non-PII metadata to `motion1-csv-list-campaign`
 - Keep participant-facing content in English and technical choices backstage
 

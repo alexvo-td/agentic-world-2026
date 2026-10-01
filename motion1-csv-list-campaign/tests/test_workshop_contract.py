@@ -103,12 +103,11 @@ class SkillContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.campaign = (ROOT / "SKILL.md").read_text(encoding="utf-8")
-        cls.intake = (ROOT.parent / "motion1-profile-csv-intake/SKILL.md").read_text(encoding="utf-8")
+        cls.intake = (ROOT.parent / "agenticworld-profile-csv-intake/SKILL.md").read_text(encoding="utf-8")
 
-    def test_bootstrap_belongs_to_intake(self):
-        online = "npx --yes --package=@treasuredata/tdx@2026.9.2 tdx --version"
-        self.assertIn(online, self.intake)
-        self.assertNotIn(online, self.campaign)
+    def test_version_check_belongs_to_intake(self):
+        self.assertIn("tdx --version", self.intake)
+        self.assertIn("successful execution reporting exactly `2026.9.3`", self.intake)
         self.assertIn("npx --offline --yes --package=@treasuredata/tdx@2026.9.2", self.campaign)
 
     def test_final_approval_has_executable_noninteractive_launch(self):
@@ -150,8 +149,8 @@ class SkillContractTests(unittest.TestCase):
     def test_distribution_docs_are_english(self):
         files = [ROOT / "SKILL.md", ROOT / "README.md", ROOT / "operator-checklist.md",
                  ROOT / "references/api-contract.md", ROOT / "references/template-and-merge-tags.md",
-                 ROOT / "csv-list-generator.html", ROOT.parent / "motion1-profile-csv-intake/SKILL.md",
-                 ROOT.parent / "motion1-profile-csv-intake/README.md"]
+                 ROOT / "csv-list-generator.html", ROOT.parent / "agenticworld-profile-csv-intake/SKILL.md",
+                 ROOT.parent / "agenticworld-profile-csv-intake/README.md"]
         for path in files:
             with self.subTest(path=path.name):
                 text = path.read_text(encoding="utf-8")
@@ -166,12 +165,13 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("send", "".join(parser.text).lower())
 
     def test_markdown_fences_and_skill_names(self):
-        for path in [ROOT / "SKILL.md", ROOT.parent / "motion1-profile-csv-intake/SKILL.md", ROOT / "references/api-contract.md", ROOT / "references/template-and-merge-tags.md"]:
+        for path in [ROOT / "SKILL.md", ROOT.parent / "agenticworld-profile-csv-intake/SKILL.md", ROOT / "references/api-contract.md", ROOT / "references/template-and-merge-tags.md"]:
             text = path.read_text(encoding="utf-8")
             with self.subTest(path=path.name):
                 self.assertEqual(sum(line.startswith("```") for line in text.splitlines()) % 2, 0)
                 if path.name == "SKILL.md":
-                    self.assertTrue(text.startswith("---\nname: motion1-"))
+                    expected_name = "motion1-" if path == ROOT / "SKILL.md" else "agenticworld-profile-csv-intake\n"
+                    self.assertTrue(text.startswith(f"---\nname: {expected_name}"))
                     self.assertLessEqual(len(text.splitlines()), 500)
 
 
