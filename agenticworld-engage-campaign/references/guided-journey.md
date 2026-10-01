@@ -12,11 +12,15 @@ Collect missing identity in one ordinary message. Save the reusable dataset auto
 
 ## 2. Understand and choose customers
 
-Inspect actual dataset values and show actual eligible business-cohort counts. Recommend all active, email-consented overdue customers as a simple initial win-back audience. Offer the alternative of higher-risk overdue customers; define high risk explicitly as propensity_to_churn >= 0.70 for this workshop, disclose it, and count against actual data. Keep both options within email consent and overdue criteria. Do not describe fictional data as real purchase history.
+Read audience-insights.md and compute a comparison from the current run dataset before asking for an audience choice. Compare all active, email-consented overdue customers (recommended) with the subset whose propensity_to_churn >= 0.70. Show the same purchase/consent criteria and actual counts for both. Explain that the higher-risk group overlaps the broader group; these are alternative targeting strategies, not additive segments.
 
-Example, with computed counts substituted:
+Save and display audience-insights.md, including an evidence table, one representative persona hypothesis per option, Northstar relevance, messaging implications and limitations. A file link alone is not presentation. Explain why the recommendation fits the participant's goal and the observed data; never substitute a generic persona for the analysis. Use only verified fields and brand assets. Keep delivery-address filtering separate from the business comparison.
 
-> Let's encourage overdue customers to return with 20% OFF. I recommend all customers overdue for their next purchase, so you can assess the response across that audience. Alternatively, we can focus on customers at higher risk of churn. Which audience would you like?
+After displaying the report, open the structured audience choice with these two options:
+- All overdue customers (Recommended): Reach the full eligible overdue group for an initial win-back exercise.
+- Higher-risk overdue customers: Focus on its subset with a workshop churn score of at least 0.70.
+
+Include each option's computed business-cohort count in its description. Offer only nonempty, evaluable strategies. If data is unavailable or required fields cannot be evaluated, disclose the limitation and retain a provisional strategy rather than inventing a report or count. Do not ask the participant to approve analysis commands.
 
 Wait for the choice. If no data exists, explain the options without inventing counts. If a chosen cohort is empty, explain and offer a meaningful alternative. Never silently relax its criteria.
 
@@ -34,19 +38,19 @@ Wait for the choice. Treat a clear “Use that recommendation” or “looks goo
 
 Implement the selected strategy and message automatically. Briefly connect the choice to its concrete effect, e.g. “You chose the welcome-back direction, so I changed the opening to a warmer greeting. The discount and all three product recommendations remain.”
 
-Show the rendered personalized email and audience/sender/settings summary. Include selected audience criteria, business-cohort count, actual delivery count and selected message direction. Invite content edits: “You can request changes to any wording. When you are ready to send, say “Launch this campaign.”” Only show launch availability when all gates pass.
+Present the four-section completed campaign review report in launch-review.md with the full rendered email, personalization examples, verified audience and sender/settings. Include selected audience criteria, business-cohort count, actual delivery count and selected message direction. Invite content edits: “You can request changes to any wording. When you are ready to send, say “Launch this campaign.”” Only show launch availability when all gates pass.
 
 On revision, change only affected decisions and regenerate/revalidate the preview. Preserve unrelated choices. A fresh preview is required for material changes; never ask permission to perform its YAML/API updates.
 
 ## 5. Launch and result
 
-Execute once after explicit launch instruction for the current completed preview. Retain all existing launch gates and reporting rules.
+Execute once after explicit approval to launch the current completed review report. Retain all existing launch gates and reporting rules. After observed delivery completion, ask once whether to show the performance report using the business-choice tool. Follow performance-report.md for the delivery-event query and presentation; if reporting was already requested, generate it directly. Refresh requests re-query and update the same campaign report.
 
 ## Shortcut and explicit requests
 
-If the participant says “Use your recommendations for everything” or explicitly delegates audience and content, choose the recommended audience and message, explain them briefly, configure automatically and show the preview without intermediate choice questions. Still wait for the final launch instruction.
+If the participant says “Use your recommendations for everything” or explicitly delegates audience and content, display the audience insight report, choose the recommended audience and message, explain them briefly, configure automatically and show the preview without intermediate choice questions. Still wait for the final launch instruction.
 
-If the initial prompt already selects audience or message, skip only that decision. If both are selected, proceed directly to automatic configuration and preview. A request to add a row only should update the CSV and stop there; do not force the campaign journey.
+If the initial prompt already selects audience or message, skip only that decision. If both are selected, display the audience insight report with the supplied selection marked, then proceed to automatic configuration and preview. Do not reopen completed decisions. A request to add a row only should update the CSV and stop there; do not force the campaign journey.
 
 ## Structured message-direction choice
 

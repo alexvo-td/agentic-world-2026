@@ -34,3 +34,21 @@
 - Draft push prompts interactively: inspect its dry-run and apply with documented --yes under existing preparation authorization. Live launch --yes remains gated by the explicit participant Launch action.
 
 - CSV import: generate a private escaped INSERT SQL file, execute it through tdx query, reconcile job status and verify actual table rows before campaign creation. An uncertain result must not trigger a blind repeated INSERT.
+
+- Draft configuration is complete: display the four-section campaign review report and full resolved email before requesting the single final launch approval.
+- “I approve this report; launch the campaign”: recheck the unchanged fingerprint and execute once with documented --yes, without asking again.
+- Report is shown but participant has not responded: do not launch.
+
+- Sender listing returns an unknown-command error from the Engage namespace: use tdx delivery senders; do not repeat the unsupported command or infer that sender discovery is unavailable. Verify supported flags automatically without a permission question.
+
+- Observed delivery completes: offer Show report / Not now once using the business-choice tool. A requested report reads the workspace-domain events table and shows the defined message-level KPIs.
+- “Refresh the report”: execute a fresh events query for the current campaign and resolved scope, update generation time and successful metrics, and do not create or resend anything.
+- Missing test_mode column: follow the documented legacy-schema decision in performance-report.md; never pretend test exclusion succeeded or alter delivery logs.
+- Refresh query fails: show failed refresh with the last successful report marked stale; do not replace its numbers with zero.
+
+- Audience choice pending: compute and display the audience comparison and each option's evidence-grounded Northstar persona before invoking the choice tool. Show overlap and distinguish the business cohort from verified delivery eligibility.
+- “Use your recommendations for everything”: still present audience insights, mark the recommended strategy as adopted, and continue without a redundant audience question.
+- Imported data lacks churn scores: show broader overdue insights where evaluable, mark higher-risk analysis unavailable and do not impute scores or invent a higher-risk persona/count.
+- High-risk cohort is empty: show zero and no supported persona; offer the nonempty broader strategy rather than fabricating differences.
+- Cohort aggregates are similar: state the observed similarity; do not invent different demographics, styles or discount sensitivity to distinguish personas.
+- “Refresh the audience report”: reread the current source, recompute aggregates and regenerate insights. Do not change targeting or send; if a prelaunch selected cohort changes, regenerate its selection/delivery artifacts and launch review before launch. After launch, retain the sent snapshot and label analysis of newer data separately.

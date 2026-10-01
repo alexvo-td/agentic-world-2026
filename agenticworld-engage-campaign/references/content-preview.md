@@ -18,6 +18,8 @@ The original CTA has no destination. Replace the span with an anchor only when a
 
 ## Preview layout
 
+Present this summary within the mandatory four-section report in launch-review.md. Show complete email content and personalization previews, then audience and sender/settings; this summary alone does not replace the rendered full email or final report approval.
+
 Show a rendered personalized email followed by the summary:
 
 | Item | Actual value |

@@ -26,4 +26,4 @@ tdx engage campaign launch "<campaign-id>" --campaign-type list-campaign --works
 
 Use `--yes` for authorized draft push; for launch use it only after the reviewed preview and explicit Launch instruction. Never infer launch authorization from technical-command permission.
 
-Sender discovery reported by the participant is not documented on this Engage page. Verify installed delivery help before binding sender commands; do not fabricate workspace-sender relationships.
+Use `tdx delivery senders` for sender listing as confirmed by the user. Sender discovery is in the delivery namespace. Inspect installed help automatically for output flags; do not pass Engage workspace flags unless supported. Verify workspace-sender relationships separately through configuration/readiness.
