@@ -1,96 +1,109 @@
 ---
-name: motion1-profile-csv-intake
-description: Use when a Motion 1 workshop participant wants to add themselves to a sample audience, create a profile CSV, or try personalized email with synthetic data. Collect email, first name, last name, and only fields needed for personalization; save a reviewed CSV in the approved Work Folder. Bootstrap tdx 2026.9.2 here when continuing to campaign setup. Hand campaign creation and delivery to motion1-csv-list-campaign.
+name: agenticworld-profile-csv-intake
+description: Prepare a Agentic World workshop audience CSV by collecting participant information in one interaction and adding 30 fictional profiles with safe test recipients. Use for workshop self-send, sample audiences, profile CSV creation, or personalized email previews. Check existing tdx 2026.9.3 before campaign setup without reinstalling a correct runtime. Hand campaign creation and delivery to motion1-csv-list-campaign.
 ---
 
 # Motion 1 — Make your workshop email personal
 
-Help the participant prepare the profile for their personalized email. Use English for all instructions, questions, previews, and completion messages. Ask one friendly question at a time, reuse answers already supplied, and keep technical settings backstage
+Use English for participant instructions, questions, previews, and completion messages. Keep technical settings backstage. Prepare the CSV and runtime check only; do not authenticate, query TD, create campaigns, or send emails here.
 
-## Participant journey
+## Collect everything in one interaction
 
-1. Ask whether they want to receive one email at their own address or try a fictional profile without sending
-2. Collect email, first name, and last name. Request additional fields only if the selected email needs them
-3. Prepare the workshop runtime backstage when continuing to campaign setup
-4. Review the fields, row count, and save destination. Save a new CSV after explicit approval
-5. Hand the saved path to the campaign Skill. Explain that the completed email will be previewed and sent only after a separate final approval
+Reuse all answers already supplied. Resolve the selected template's required personalization fields from the existing brief before asking. Request all missing information in one compact form, rather than one question at a time:
 
-Ask “What name would you like the email to use?” or “Would you like to personalize anything else? You can skip this.” Do not make participants choose SQL types, merge-tag syntax, mappings, or CLI flags
+> Please fill in the missing details below so I can prepare your workshop audience:
+> - Email address: your own address, if you want to receive the workshop email
+> - First name:
+> - Last name:
+> - Company Name
+> - Delivery mode: receive the email after final approval, or preview only
+>
+> I will add 30 fictional profiles for the demonstration. In delivery mode, these use approved test recipients. Creating the CSV does not send any email.
 
-## Data handling
+Omit questions already answered. Include only personalization fields actually needed; mark optional fields as optional. Treat an explicit request to send to the participant's own supplied address as their self-send opt-in. Ask follow-up questions only for missing required values or ambiguities, grouping them in one message. Do not ask participants to choose types, merge-tag syntax, mappings, or CLI flags.
 
-- Confirm operator-approved purpose, chat collection/retention, Work Folder access, and downstream TD query/job-history exposure. Ask the operator once if missing; do not repeat approved setup questions for each participant
-- For self-send, confirm the participant's own address and intent to receive this one email. The default live list contains exactly one participant. CSV-save approval is not delivery approval
-- For third-party real data, require data-owner approval for purpose, collection, retention, and destination. Without it, collect field names only and request an approved local CSV instead of real rows in chat
-- Use fictional `example.test` addresses for synthetic profiles. They are **preview-only**, not deliverable recipients
-- Do not collect credentials, tokens, government IDs, payment data, or unrelated sensitive information
-- Do not infer, normalize, repair, or silently exclude real values. Ask about ambiguity, blanks, and duplicates
-- Keep full addresses and profile rows out of shared artifacts, handoffs, and shell arguments. Mask summaries; use a private participant review only when policy permits
+## Reuse approved workshop settings
 
-## Prepare the pinned tdx runner
+Use existing operator-approved purpose, collection/retention, Work Folder access, downstream TD query/job-history exposure, save destination, delivery provider, and file/row/SQL limits. Resolve missing workshop settings with the operator once, in a grouped request; do not repeat them for every participant.
 
-This Skill owns initial tdx pre-release setup. The campaign Skill must not install or update it. Skip setup for a CSV-only or fictional-preview-only request
+For third-party real profiles, require data-owner approval for purpose, collection, retention, and destination. Without approval, collect field names only and request an approved local CSV instead of real rows in chat.
 
-Run this in the same approved runtime that will execute the campaign. The first invocation may download the exact package into its local cache. Never install globally or silently switch to the latest release
+Do not collect credentials, tokens, government IDs, payment data, or unrelated sensitive information. Do not infer, normalize, repair, or silently drop real values. Resolve ambiguity, required blanks, and duplicates with the participant. Keep full real addresses and rows out of shared summaries, technical handoffs, and shell arguments. Use private review only where approved. Never put real profiles in a Skill or source repository.
+
+## Check the existing tdx runner
+
+Skip this step for CSV-only requests. When continuing to campaign operations, run in the exact runtime that will execute the campaign:
 
 ```bash
-npx --yes --package=@treasuredata/tdx@2026.9.2 tdx --version
+tdx --version
 ```
 
-- Confirm successful execution and version `2026.9.2`; do not reuse another environment's check
-- Confirm `npx --offline --yes --package=@treasuredata/tdx@2026.9.2 tdx --version` also succeeds so campaign commands need no package download
-- Record verified runtime, version, runner, and check time in the non-PII handoff
-- npm `--yes` confirms package preparation only; it does not approve TD writes or sends
-- Distinguish compatibility warnings from execution failures. If setup fails, explain that the operator must check the workshop runtime. Do not bypass denied permissions or safety controls
-- Version checks are the only tdx operations here. Do not authenticate, query TD, inspect tables, prepare SQL, create campaigns, or launch/send
+Require successful execution reporting exactly `2026.9.3`. If correct, reuse the installed `tdx` command. Skip installation, updates, npx preparation, and offline-cache checks. Record runtime identity, version, runner, and check time in the non-PII handoff. Do not reuse a check from another runtime.
 
-## Build the CSV backstage
+If tdx is missing, fails, or has a different version, report the result to the operator and use an already approved exact-version fallback only if one exists. Otherwise mark the campaign handoff blocked until the operator fixes the runtime; CSV preparation can continue. Do not install globally, silently update, select latest, or bypass denied permissions. Distinguish compatibility warnings from command failure. This Skill's only tdx operation is the version check.
 
-- Require lowercase `email`. Use `first_name`, `last_name`, and SQL-safe lowercase names for optional columns
-- Use approved key/blank policy and file/row/SQL limits from the readiness ledger. Self-send is one row; synthetic fixtures may contain multiple rows
-- The downstream helper stores non-time fields as text and `time` as Unix seconds. Normally omit `time` so it can add ingest time later
-- Do not promise unsupported numeric/date types, multiline cells, or large/batched processing
-- Use UTF-8 and standard CSV quoting. Validate required values, email format, field counts, duplicates, and blanks. Ask about errors instead of silently dropping rows
+## Build the audience CSV
 
-When adding someone to a sample CSV, preserve the original and save a new version. The live self-send version contains only that participant—not fictional addresses or other participants. Explain and confirm this distinction
+Default to one participant profile plus exactly 30 synthetic profiles: 31 rows total. Honor an explicitly requested different count or synthetic-only mode. For an existing uploaded customer list, preserve the source and confirm the intended audience composition before adding rows; do not assume it contains only the participant.
 
-## Review and save
+Use lowercase `email`, `first_name`, `last_name`, and SQL-safe lowercase optional headers. Generate fictional names and plausible randomized values for the same personalization columns. Keep real values unchanged. Do not copy the participant's attributes to every synthetic row. Use bounded choices suitable for the selected email, without unrelated sensitive attributes or invented real contact details.
 
-Show purpose, field names, data mode, row count, new filename, approved destination, and validation result. Mask real values in shared summaries. Ask for explicit save approval and explain that this action does not start delivery
+### Choose test recipients
 
-Save only a new file. If the destination is unknown, unauthorized, over-shared, or already exists, stop and confirm another path. Never save real profiles inside a Skill or source repository
+For a confirmed Amazon SES delivery path, assign these 30 distinct addresses:
 
-## Internal handoff
+```text
+success+motion1-001@simulator.amazonses.com
+...
+success+motion1-030@simulator.amazonses.com
+```
 
-Tell the participant “Your CSV is saved. Let’s create the email and preview it.” Keep this technical handoff backstage; include no profile values or credentials
+Use these as synthetic recipient values, never random addresses at real domains. Amazon SES supports labels on mailbox simulator addresses. The `success` scenario simulates successful delivery; it does not provide a human inbox for reading, opening, or clicking. Simulator sends require SES and incur normal send charges. They do not affect SES daily sending quota or bounce/complaint rates, but remain subject to sending-rate limits. Do not promise that Engage reporting excludes simulator traffic or that application validation, suppression, or campaign limits are bypassed.
+
+Source: https://docs.aws.amazon.com/ses/latest/dg/send-an-email-from-console.html
+
+If the delivery provider is unknown, resolve it with the operator once. For a non-SES path, use explicitly approved operator-controlled test inboxes or aliases, with receive capability verified for this workflow. Do not invent a universally deliverable address. Never silently omit synthetic recipients or switch a requested live audience to preview mode.
+
+For preview-only mode, use unique `profile-001@example.test` through `profile-030@example.test` addresses; omit a real email if unnecessary and use a fictional address for the participant-shaped row. Mark the whole CSV preview-only and prevent it from being handed off as sendable.
+
+### Validate and write
+
+Use UTF-8 and standard CSV quoting. Validate required values, email syntax, consistent field counts, unique email keys, required blanks, recipient classes, and row count. Preserve plus labels as part of each unique address. For the default live flow require exactly one opted-in participant address and 30 approved simulator/test addresses. Resolve failures rather than dropping rows.
+
+Use existing approved key/blank policy and file/row/SQL limits. Downstream non-time fields are text; `time`, if present, is Unix seconds. Normally omit `time` so the helper can add ingest time. Do not promise unsupported numeric/date types, multiline cells, or large/batched processing.
+
+Save a new file in the approved Work Folder. Preserve original files. Use a unique filename rather than overwrite. If the user has requested CSV creation and the destination and data handling are already approved, that request authorizes saving; do not ask for redundant save approval. Resolve an unknown, unauthorized, or over-shared destination before writing real profiles.
+
+Show a masked summary: purpose, field names, data mode, participant/synthetic/total counts, new filename, destination, validation result, and whether recipients are sendable. Saving never authorizes delivery.
+
+## Handoff to campaign creation
+
+Tell the participant: “Your CSV is saved. Let’s create the email and preview it.” For CSV-only requests, report completion without initiating campaign setup.
+
+Keep this handoff backstage and include no profile values or credentials:
 
 ```text
 CSV file: <approved absolute path>
-Data mode: synthetic | participant-self | owner-approved-real
-Collection/retention/destination approval: confirmed | missing | not-applicable
-Workshop self-send opt-in: confirmed | missing | not-applicable
+Collection/retention/destination approval: confirmed
+Workshop self-send opt-in: confirmed
 Columns/types: <names and types only>
-Rows: <count>
-Unique key: <column>
-Blank/time policy: <approved policy>
-Limits: <approved file/row/SQL limits>
-TDX runner: 2026.9.2 verified | not-prepared | blocked
-Runtime/checked at: <runtime and check time>
+Rows: <total>; participant: <count>; synthetic: <count>
+Sendable: yes
+Unique key: email
+TDX runner: installed tdx 2026.9.3 verified | not-checked | blocked
+Runtime/checked at: <runtime identity and check time>
 Campaign brief: <purpose, tone, workspace/template/name; no profile values>
 Validation: passed | blocked <aggregate counts and reasons>
 Next: motion1-csv-list-campaign
 ```
 
-When asked to continue, invoke `motion1-csv-list-campaign` with existing answers and the CSV path. Offer a follow-up prompt only if invocation is unavailable. The campaign Skill revalidates the saved file
+When asked to continue, invoke `motion1-csv-list-campaign` with the saved path and existing answers. If unavailable, provide a follow-up prompt. The campaign Skill must revalidate the saved file and reuse the verified runner. Do not claim the campaign Skill was updated by creating this Skill. If it enforces a conflicting one-recipient-only rule, report the conflict to the operator before campaign creation; do not silently shrink the audience or override it.
+
+Require a separate final delivery approval in the campaign Skill, showing the actual recipient composition, for example “1 participant + 30 SES simulator recipients = 31 total.” Preview-only recipients must never be sent. No send approval is requested or exercised here.
 
 ## Examples
 
-**Input:** “Create a workshop email with my name and send it to me after I approve”
-
-**Output:** Verify data handling and the participant's intent to receive one email. Collect needed fields, prepare tdx backstage, review the one-row destination, and ask before saving. Continue to email creation without sending from this Skill
-
-**Input:** “Try two fictional profiles without sending anything”
-
-**Output:** Create a preview-only `example.test` CSV and ask before saving. Prepare tdx only when continuing to campaign operations. Do not apply the one-recipient live-send restriction to synthetic fixtures
-
-💎 Generated with [Treasure Work](https://github.com/treasure-work)
+- “Create a workshop email with my name and send it to me after I approve.” Collect all missing fields once; generate 1 participant plus 30 SES simulator profiles when SES is confirmed; check installed tdx only when continuing; save a new approved CSV; hand off for preview and final send approval.
+- “Here are my email, first name, and last name; create the CSV.” Reuse supplied values, ask only for genuinely missing required information, and save without repeating an already authorized save step.
+- “Try fictional profiles without sending.” Generate preview-only `example.test` profiles; omit unnecessary real data; save the CSV; skip the version check unless continuing to campaign operations.
+- “tdx reports 2026.9.3.” Verify in the actual campaign runtime unless this session already has a successful check for that same runtime; reuse the installed runner without package preparation.
