@@ -9,18 +9,19 @@ Use English for participant instructions, questions, previews, and completion me
 
 ## Collect everything in one interaction
 
-Reuse all answers already supplied. Resolve the selected template's required personalization fields from the existing brief before asking. Request all missing information in one compact form, rather than one question at a time:
+Reuse all answers already supplied. Resolve the selected template's required personalization fields from the existing brief before asking. Use the `AskUserQuestion` tool to collect all missing information in one call (up to 4 questions per call), rather than displaying a text form or asking one question at a time.
 
-> Please fill in the missing details below so I can prepare your workshop audience:
-> - Email address: your own address, if you want to receive the workshop email
-> - First name:
-> - Last name:
-> - Company Name
-> - Delivery mode: receive the email after final approval, or preview only
->
-> I will add 30 fictional profiles for the demonstration. In delivery mode, these use approved test recipients. Creating the CSV does not send any email.
+Call `AskUserQuestion` with the following questions for any missing required fields. Omit questions for fields already answered. Batch up to 4 questions in a single call:
 
-Omit questions already answered. Include only personalization fields actually needed; mark optional fields as optional. Treat an explicit request to send to the participant's own supplied address as their self-send opt-in. Ask follow-up questions only for missing required values or ambiguities, grouping them in one message. Do not ask participants to choose types, merge-tag syntax, mappings, or CLI flags.
+- **Email address** (header: "Email"): "What email address should I use for your participant profile?" — options: `["Send the workshop email to me after approval", "Skip — preview only"]`. If the participant wants to receive the email, they type their actual address using the "Other" input.
+- **First name** (header: "First Name"): "What is your first name?" — options: `["Enter my first name", "Use a fictional name for me"]`. Participant types their name via "Other".
+- **Last name** (header: "Last Name"): "What is your last name?" — options: `["Enter my last name", "Use a fictional name for me"]`. Participant types their name via "Other".
+- **Company name** (header: "Company"): "What is your company name?" — options: `["Enter my company name", "Leave company blank"]`. Participant types via "Other", or selects "Leave company blank" to omit.
+- **Delivery mode** (header: "Delivery"): "How would you like to receive the workshop email?" — options: `["Send after my final approval", "Preview only — no email sent"]`. Only ask this if delivery mode was not already determined from the email question.
+
+Always note in the question preamble: "I will add 30 fictional profiles for the demonstration. In delivery mode, these use approved test recipients. Creating the CSV does not send any email."
+
+Treat selection of "Send after my final approval" or entry of a real email address as the participant's self-send opt-in. Include only personalization fields actually needed; mark optional fields as optional. Ask follow-up questions only for missing required values or ambiguities, grouping them in one `AskUserQuestion` call. Do not ask participants to choose types, merge-tag syntax, mappings, or CLI flags.
 
 ## Reuse approved workshop settings
 
@@ -78,7 +79,7 @@ Show a masked summary: purpose, field names, data mode, participant/synthetic/to
 
 ## Handoff to campaign creation
 
-Tell the participant: “Your CSV is saved. Let’s create the email and preview it.” For CSV-only requests, report completion without initiating campaign setup.
+Tell the participant: "Your CSV is saved. Let's create the email and preview it." For CSV-only requests, report completion without initiating campaign setup.
 
 Keep this handoff backstage and include no profile values or credentials:
 
@@ -99,11 +100,11 @@ Next: motion1-csv-list-campaign
 
 When asked to continue, invoke `motion1-csv-list-campaign` with the saved path and existing answers. If unavailable, provide a follow-up prompt. The campaign Skill must revalidate the saved file and reuse the verified runner. Do not claim the campaign Skill was updated by creating this Skill. If it enforces a conflicting one-recipient-only rule, report the conflict to the operator before campaign creation; do not silently shrink the audience or override it.
 
-Require a separate final delivery approval in the campaign Skill, showing the actual recipient composition, for example “1 participant + 30 SES simulator recipients = 31 total.” Preview-only recipients must never be sent. No send approval is requested or exercised here.
+Require a separate final delivery approval in the campaign Skill, showing the actual recipient composition, for example "1 participant + 30 SES simulator recipients = 31 total." Preview-only recipients must never be sent. No send approval is requested or exercised here.
 
 ## Examples
 
-- “Create a workshop email with my name and send it to me after I approve.” Collect all missing fields once; generate 1 participant plus 30 SES simulator profiles when SES is confirmed; check installed tdx only when continuing; save a new approved CSV; hand off for preview and final send approval.
-- “Here are my email, first name, and last name; create the CSV.” Reuse supplied values, ask only for genuinely missing required information, and save without repeating an already authorized save step.
-- “Try fictional profiles without sending.” Generate preview-only `example.test` profiles; omit unnecessary real data; save the CSV; skip the version check unless continuing to campaign operations.
-- “tdx reports 2026.9.3.” Verify in the actual campaign runtime unless this session already has a successful check for that same runtime; reuse the installed runner without package preparation.
+- "Create a workshop email with my name and send it to me after I approve." Use AskUserQuestion to collect all missing fields in one call; generate 1 participant plus 30 SES simulator profiles when SES is confirmed; check installed tdx only when continuing; save a new approved CSV; hand off for preview and final send approval.
+- "Here are my email, first name, and last name; create the CSV." Reuse supplied values, ask only for genuinely missing required information via AskUserQuestion, and save without repeating an already authorized save step.
+- "Try fictional profiles without sending." Generate preview-only `example.test` profiles; omit unnecessary real data; save the CSV; skip the version check unless continuing to campaign operations.
+- "tdx reports 2026.9.3." Verify in the actual campaign runtime unless this session already has a successful check for that same runtime; reuse the installed runner without package preparation.
