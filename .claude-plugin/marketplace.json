@@ -29,7 +29,7 @@
     },
     {
       "name": "setup-campaign",
-      "description": "Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after one final confirmation. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, preview-confirmed launch, and status read-back for the exact generated campaign. Reuse exact tdx 2026.9.3 verified by agenticworld-profile-csv-intake. Performance reporting is excluded from this version.",
+      "description": "Use when a user explicitly asks to set up or create an email campaign, such as “I want to set up an email campaign,” using a reviewed CSV from agenticworld-profile-csv-intake. Help select or create a supported Engage workspace, template, sender, and CSV recipient list; stage a ListCampaign, preview it, show one consolidated settings report, and send after one final confirmation. Reuse exact tdx 2026.9.3 from intake. Performance reporting is excluded.",
       "source": "./",
       "strict": false,
       "skills": [

@@ -1,10 +1,10 @@
 # Motion 1 — Create your email and receive it
 
-Turn your reviewed profile CSV and chosen template into a personalized workshop email. AI Studio handles setup, asks only about unresolved creative choices, shows the exact preview and full workshop recipient set, and asks once for final send confirmation.
+When you ask to set up an email campaign, this Skill reuses your reviewed Intake CSV, helps you select the workspace, template, sender, and recipient list, and then previews the campaign. It reports the collected settings with the exact preview and recipients, then asks once for final send confirmation.
 
 ## Try this prompt
 
-> “In Agentic World Workspace, create a one-off campaign named Agentic World Engage Workshop.firstname.lastname using [template] and [CSV]. Show me the exact preview and workshop recipient list, then ask once before sending.”
+> “I want to set up an email campaign. Use my Intake CSV, show me the available Workspace, Template, and Sender options, then show the settings report and exact preview before asking once to send.”
 
 If your CSV is not ready, begin with `agenticworld-profile-csv-intake`. It reuses information already collected and asks all missing required profile details together in one ordinary message. It skips the question when the required values are already present.
 
@@ -13,18 +13,21 @@ If your CSV is not ready, begin with `agenticworld-profile-csv-intake`. It reuse
 | Step | What happens |
 |---|---|
 | Profile | Reuse details already supplied; ask once for missing required fields only |
-| Create email | Choose a template, campaign name, and any unresolved message choices |
-| Preview | Review the exact content, personalization, sender, and actual recipient composition |
+| Choose setup resources | Select an available Workspace, Template, Sender, and Intake CSV recipient list; choose “Create new” where offered |
+| Create email | Set the campaign name and resolve any missing message choices |
+| Preview | Review the settings report, exact content, personalization, sender, and actual recipient composition |
 | Approve and send | Confirm the one-time send to the participant plus 30 approved test destinations by default |
 | Confirm launch status | See the actual campaign state and check the participant inbox if applicable |
 
-The workshop send target is one participant-provided address plus 30 approved test-recipient addresses (31 total). Test addresses are included in the delivery target; they are not extra participants. `example.test` fixtures are preview-only. After the exact preview and target list are shown, one final confirmation is required. The Skill launches only that unchanged campaign once.
+The Skill lists resources verified in the selected workspace. `Agentic World Workspace`, `Template Email - Northstar`, and `Northstar Email` appear as options only when discovery confirms they exist. “Create new” for a new audience invokes Intake and resumes setup with its CSV. A new template uses the supported YAML+HTML workflow; new Workspace/Sender resources are created only through documented supported operations. Unsupported provisioning is reported for operator handling, never guessed.
+
+The workshop send target is one participant-provided address plus 30 approved test-recipient addresses (31 total). Test addresses are included in the delivery target; they are not extra participants. `example.test` fixtures are preview-only. After the settings report, exact preview, and target list are shown, one final confirmation is required. The Skill launches only that unchanged campaign once.
 
 ## Behind the scenes
 
 - Reuse installed tdx only when it reports exactly `2026.9.3` in the campaign runtime. If missing or mismatched, intake prepares and verifies `@treasuredata/tdx@2026.9.3` with npx, then passes the exact same runner command to this Skill
 - ListCampaign uses a staged contact-list table, not direct CSV upload or a CDP Audience/segment
-- The Skill batches read-only account/workspace/template/sender discovery under campaign setup authorization, then reports the collected settings once in the final review; it validates the file, maps actual table columns, and personalizes with `{{ profile.first_name }}`
+- The Skill batches read-only account/workspace/template/sender discovery under setup authorization without “May I run these?” or “Command I’ll run” approval-seeking preambles; it reports the values once in the final review, validates the file, maps actual table columns, and personalizes with `{{ profile.first_name }}`
 - An authorized campaign request covers necessary setup, CSV loading, SQL execution, DRAFT save, previews, and read-back without separate conversational approvals
 - Push/launch dry-runs do not render email, count eligible recipients, or prove consent. Verify those separately
 - Non-TTY execution uses CLI `--yes` for already authorized operations; the final settings report, exact preview, and recipient set are covered by one send confirmation. Runtime approval and permissions remain enforced

@@ -2,7 +2,12 @@
 
 Keep participant-facing content in English and technical details backstage.
 
-## Northstar participant journey
+## Campaign setup and resource selection
+- [ ] Start setup-campaign only for an explicit email-campaign setup/create request; CSV creation alone does not trigger it.
+- [ ] Reuse the Intake handoff. If the audience choice is “Create new,” invoke Intake with existing answers, then resume setup with the returned CSV.
+- [ ] Run read-only account/workspace/template/sender discovery without “May I run these?” or “Command I’ll run” preambles; respect host/runtime permission prompts.
+- [ ] Ask one friendly resource-choice question at a time for Workspace, Template, Sender, and CSV audience. Show `Agentic World Workspace`, `Template Email - Northstar`, and `Northstar Email` only if present in live discovery.
+- [ ] For “Create new,” collect needed values and use only documented creation operations. Use the Engage template YAML+HTML workflow for supported new templates. If Workspace/Sender creation is unsupported, report the operator action needed; never guess commands or IDs.
 - [ ] Reuse profile answers from intake; ask all missing required profile values together in one ordinary message, never with a Question tool or form; skip questions when complete.
 - [ ] Introduce the participant as Northstar Home & Living's marketer re-engaging customers overdue for another purchase.
 - [ ] Reuse the objective; ask only for unresolved creative direction. Default to warm home inspiration.
@@ -15,7 +20,7 @@ Keep participant-facing content in English and technical details backstage.
 
 ## Readiness
 - [ ] Establish data handling, retention, query-history handling, destination, limits, recipient scope, and cleanup ownership once.
-- [ ] Run read-only account/workspace/template/sender discovery together under setup authorization; do not ask “May I run these?” or seek per-command conversational approval. Respect host/runtime permission prompts.
+- [ ] Verify account/workspace/template/sender IDs against discovery results and confirm existing permissions without collecting credentials.
 - [ ] Retain discovered settings for one consolidated report at the final review; do not ask for a separate settings-only confirmation.
 - [ ] Require exact tdx `2026.9.3`; reuse installed `tdx` when already exact, otherwise prepare and verify pinned `npx --yes --package=@treasuredata/tdx@2026.9.3 tdx` in the campaign runtime.
 - [ ] Carry the exact verified runner command/runtime from intake into all campaign operations; do not substitute versions or use `--offline`.
