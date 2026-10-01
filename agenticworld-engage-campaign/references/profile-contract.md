@@ -31,6 +31,10 @@ Default sample addresses: `customer000001@northstar.example` through `customer00
 
 For samples to receive mail, host must supply controlled, verified test inbox addresses and declare they are authorized for the workshop. Do not guess aliases or expand plus-addresses. Keep their delivery configuration separate from participant identity. If no verified test inboxes exist, send only to the eligible participant: 31 stored profiles, 1 recipient. If supplied, use the actual eligible controlled-inbox count; do not force 31.
 
-Eligibility: active AND overdue AND email_consent_status=GRANTED AND email is the participant's supplied self-send address or a host-verified test address. Record exclusions and count after selection. Synthetic consent does not authorize delivery to unrelated real addresses.
+Choose the business cohort under guided-journey.md first (all overdue or high-churn overdue); retain its artifact/count separately. Delivery eligibility: member of the selected cohort AND active AND overdue AND email_consent_status=GRANTED AND email is the participant's supplied self-send address or a host-verified test address. Record exclusions and count after selection. Synthetic consent does not authorize delivery to unrelated real addresses.
 
 Use UTF-8 and Python csv quoting. Trim email whitespace; preserve spelling/case except for case-insensitive deduplication keys. Do not lowercase names. Upsert by normalized email; preserve existing IDs, extra columns, sample rows and user overrides. For externally supplied data, validate consent/eligibility and fill only missing fictional fields after identifying it as workshop data. Do not assign synthetic consent to real imported customer records.
+
+## Recipient table email column
+
+Keep `email_address` in the reusable dataset. Build the selected-recipient import artifact with a physical `email` column populated from `email_address`; keep other mapped attributes. Import into the campaign recipient table and verify `email` exists with the expected values. `source_columns` requires `key: email`, `sql_name: email`, `type: string`; an alternate `sql_name: email_address` is invalid. Preserve the reusable CSV and shared tables. Retain email_address additionally only if needed for subsequent profile personalization.

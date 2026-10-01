@@ -11,5 +11,5 @@
     "rug": null,
     "lamp": null
   },
-  "runtime_version": "2026.9.3"
+  "minimum_runtime_version": "2026.9.3"
 }

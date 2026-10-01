@@ -47,7 +47,7 @@
     },
     {
       "name": "agenticworld-engage-campaign",
-      "description": "Use only for the Agentic World 2026 Northstar Home & Living win-back workshop: add the participant to its reusable sample audience, prepare its synthetic customer CSV, personalize the fictional 20% discount email, generate the preview, and set up or launch its CSV List one-off Engage campaign.",
+      "description": "Use only for the Agentic World 2026 Northstar Home & Living win-back workshop: prepare a reusable synthetic audience, guide the participant to choose an overdue-customer cohort and email direction, personalize the fictional 20% offer, preview, and set up or launch its CSV List one-off Engage campaign.",
       "source": "./",
       "strict": false,
       "skills": [
