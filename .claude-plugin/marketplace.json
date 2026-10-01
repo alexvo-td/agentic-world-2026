@@ -46,6 +46,15 @@
       ]
     },
     {
+      "name": "agenticworld-engage-campaign",
+      "description": "Use only for the Agentic World 2026 Northstar Home & Living win-back workshop: add the participant to its reusable sample audience, prepare its synthetic customer CSV, personalize the fictional 20% discount email, generate the preview, and set up or launch its CSV List one-off Engage campaign.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./agenticworld-engage-campaign"
+      ]
+    },
+    {
       "name": "html-to-beefree",
       "description": "Use when the user wants to convert an HTML email into a BeeFree visual template in Treasure Engage, import HTML into the visual editor, push HTML as a drag-and-drop template, or says \"create a visual template from this HTML\". Converts raw HTML emails into BeeFree's proprietary JSON format and pushes via the Engage API so the template opens with fully editable blocks in the visual editor.",
       "source": "./",

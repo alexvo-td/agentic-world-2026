@@ -203,6 +203,14 @@ class SkillContractTests(unittest.TestCase):
         self.assertEqual(entries[0]["skills"], ["./setup-campaign"])
         self.assertTrue((ROOT / "SKILL.md").read_text(encoding="utf-8").startswith("---\nname: setup-campaign\n"))
 
+    def test_agenticworld_engage_campaign_matches_marketplace_registration(self):
+        manifest = json.loads((ROOT.parent / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+        entries = [plugin for plugin in manifest["plugins"] if plugin["name"] == "agenticworld-engage-campaign"]
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["skills"], ["./agenticworld-engage-campaign"])
+        skill = ROOT.parent / "agenticworld-engage-campaign/SKILL.md"
+        self.assertTrue(skill.read_text(encoding="utf-8").startswith("---\nname: agenticworld-engage-campaign\n"))
+
     def test_canonical_intake_skill_name_is_used(self):
         marketplace = (ROOT.parent / ".claude-plugin/marketplace.json").read_text(encoding="utf-8")
         self.assertIn("agenticworld-profile-csv-intake", self.campaign)
