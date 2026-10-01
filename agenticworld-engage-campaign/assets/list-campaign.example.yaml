@@ -1,0 +1,17 @@
+type: list_campaign
+name: "<participant-confirmed-name>"
+contact_list:
+  database_name: agentic_world_demo
+  table_name: "<verified-recipient-table>"
+source_columns:
+  - key: email
+    sql_name: email
+    type: string
+  - key: first_name
+    sql_name: first_name
+    type: string
+email:
+  template: "ref:<verified-template-name>"
+  subject: "<reviewed-subject>"
+  html_file: "workshop-email.html"
+  sender_id: "<verified-workspace-sender-ID>"

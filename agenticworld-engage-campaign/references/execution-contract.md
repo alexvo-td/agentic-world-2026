@@ -4,15 +4,42 @@
 
 Use host-provided TAIS shared-workfolder capabilities, participant workfolder context, authenticated TD region/account, an Engage workspace and verified sender. Host configuration must supply collection URL and optionally test inboxes/product catalog IDs. The bundled JSON contains null placeholders intentionally. Do not expose secrets in chat, CSVs, process logs or readiness state.
 
-The user supplied no CSV List API specification in this package. This skill specifies orchestration, not an invented endpoint implementation. Before a service mutation inspect authenticated installed CLI help, host runbook or authoritative service contract for the current account. If available, reuse the motion1-csv-list-campaign technical reference after reading it; this skill's conversation contract supersedes intermediate approval questions. Never require that sibling skill to exist silently.
+The user supplied a CSV List campaign YAML specification in [campaign-yaml.md](campaign-yaml.md) and `assets/list-campaign.example.yaml`, but no endpoint or CLI mutation syntax. This skill specifies orchestration, not an invented endpoint implementation. Before a service mutation inspect authenticated installed CLI help, host runbook or authoritative service contract for the current account. If available, reuse the motion1-csv-list-campaign technical reference after reading it; this skill's conversation contract supersedes intermediate approval questions. Never require that sibling skill to exist silently.
 
 ## Runtime
 
-Check installed `tdx --version` once. If exact 2026.9.3, reuse it without npm installation. Otherwise prepare `npx --yes --package=@treasuredata/tdx@2026.9.3 tdx --version` and verify exact version; reuse this runner for subsequent commands. Check actual Node/package compatibility and network availability. Do not stop merely because the globally installed tdx has another version. Do not repeatedly download a correct runtime. If preparation fails, preserve artifacts and tell the host the dependency that failed without asking the marketer to operate a CLI.
+Check installed `tdx --version` once. Treat `2026.9.3` as the minimum supported version, not an exact pin. Compare numeric semantic-version components, not lexical strings (for example, 2026.10.0 is newer than 2026.9.3).
+
+- If installed version is 2026.9.3 or newer, reuse the global `tdx` without installation or upgrade.
+- If installed version is older, or `tdx` is missing, run `npm install -g @treasuredata/tdx` to install the latest release. Do not add an explicit version suffix and do not substitute a pinned npx runner.
+- After installation, run `tdx --version` again and verify it meets the minimum. Use this verified global command for subsequent operations.
+- If version output is unparseable, diagnose the installed command before deciding to upgrade; do not assume it is old. For prereleases, use semantic-version ordering against the stable minimum.
+
+Check actual Node/package compatibility, global npm write access and network availability. Do not repeatedly install a runtime that already meets the minimum. If preparation fails or the resulting version is below the minimum, preserve artifacts and tell the host the dependency that failed without asking the marketer to operate a CLI. Record the observed version; check its actual command contract before service mutations.
+
+## Direct CLI invocation
+
+Run all version, help, authentication, audience, campaign, validation, launch and status commands directly as `tdx ...`. Do not prepend `npx`, `--package`, or a version-pinned runner. When reusing commands from another skill or runbook, retain the documented subcommand and arguments but replace its runtime wrapper with `tdx`. If global installation succeeds but `tdx` is not found, diagnose the npm global binary directory and PATH; do not silently fall back to npx.
+
+## Read-only discovery without conversational approval
+
+The campaign-preparation request authorizes the reads needed to prepare it. Execute workspace, sender and campaign listing/details, CLI help/version, authenticated configuration reads and status checks immediately. Do not ask for permission because a command accesses a service, because configuration is unknown, or because the operation is read-only. Unknown configuration is a reason to inspect it, not a reason to request approval.
+
+For the reported discovery sequence, use the following direct commands when their syntax is supported by installed CLI help:
+
+```bash
+tdx engage workspaces --output json
+tdx engage senders
+tdx engage campaigns
+```
+
+Inspect help automatically and adjust arguments if the installed CLI requires them. Do not print these commands as a proposed action awaiting approval. Participant-facing progress example: “Engageワークスペースと送信設定を確認しています。” Then execute and continue preparation.
+
+Use sibling skills and host runbooks for technical command contracts only. Do not inherit their conversational approval prompts, query-history consent steps or npx wrappers. This applies even when they recommend approval before list/show/get operations. Preserve the final participant Launch action after preview. Platform-enforced tool approvals remain outside this skill's control; do not claim they can be disabled here or convert ordinary discovery into a voluntary approval request.
 
 ## Verified API binding
 
-Before create/import/update/validate/launch, bind each operation to a documented command and response shape. Record non-secret command contract, relevant object ID and status. Require explicit support for CSV List one-off audience; never silently substitute a parent segment. Confirm email_address routing, automatic inclusion of all columns, profile namespace availability, content fields, sender configuration, validation and launch semantics. If unsupported or undocumented, complete local preparation and report that live execution is blocked.
+Before create/import/update/validate/launch, bind each operation to a documented command and response shape. Record non-secret command contract, relevant object ID and status. Require explicit support for CSV List one-off audience; never silently substitute a parent segment. Confirm the recipient table has a physical `email` column and the mandatory `source_columns` entry uses `key: email`, `sql_name: email`, `type: string`, automatic inclusion of all columns, profile namespace availability, content fields, sender configuration, validation and launch semantics. If unsupported or undocumented, complete local preparation and report that live execution is blocked.
 
 Use authenticated context; do not put credentials in files. Fetch actual workspace/sender configuration, enforce the requested account/region. Do not guess sender addresses. Carry all CSV fields through import. Do not use SQL INSERT unless the verified contract needs it; if necessary perform authorized data operations without a redundant query-history consent question.
 
@@ -24,6 +51,6 @@ On rerun load state, fetch object status and reuse/update a draft. Detect duplic
 
 ## Launch gates
 
-Require completed import; eligible participant included exactly once; exact eligible count; no placeholder or denied recipients; supported profile merge tags; saved HTML and subject; verified sender; configured HTTPS CTA; unsubscribe system tag; successful service validation; displayed current fingerprint; explicit launch instruction after preview. Persist launch intent before calling launch. A changed offer/audience/sender/content requires a fresh preview and launch instruction.
+Require completed import; eligible participant included exactly once; exact eligible count; no placeholder or denied recipients; supported profile merge tags; saved HTML and subject; verified sender; verified table/source mappings and YAML companion paths; authorized assets and established offer; configured HTTPS CTA; unsubscribe system tag; successful service validation; displayed current fingerprint; explicit launch instruction after preview. Persist launch intent before calling launch. A changed offer/audience/sender/content requires a fresh preview and launch instruction.
 
 Read delivery status through supported APIs. Submission is not delivery, delivery is not inbox placement. Summarize bounces/errors from actual reporting. Technical problems go to host-facing remediation without requesting repeated participant approval.
