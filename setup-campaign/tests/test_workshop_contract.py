@@ -109,6 +109,8 @@ class SkillContractTests(unittest.TestCase):
     def test_exact_version_and_runner_handoff_belong_to_intake(self):
         self.assertIn("tdx --version", self.intake)
         self.assertIn("reports exactly `2026.9.3`", self.intake)
+        self.assertIn("without asking “May I run this?”", self.intake)
+        self.assertIn("announcing “Command I’ll run”", self.intake)
         npx_runner = "npx --yes --package=@treasuredata/tdx@2026.9.3 tdx"
         self.assertIn(f"{npx_runner} --version", self.intake)
         self.assertIn(npx_runner, self.intake)
