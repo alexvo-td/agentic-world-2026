@@ -34,13 +34,13 @@ Wait for the choice. Treat a clear “Use that recommendation” or “looks goo
 
 Implement the selected strategy and message automatically. Briefly connect the choice to its concrete effect, e.g. “You chose the welcome-back direction, so I changed the opening to a warmer greeting. The discount and all three product recommendations remain.”
 
-Show the rendered personalized email and audience/sender/settings summary. Include selected audience criteria, business-cohort count, actual delivery count and selected message direction. Invite content edits: “You can request changes to any wording. When you are ready to send, say “Launch this campaign.”” Only show launch availability when all gates pass.
+Present the four-section completed campaign review report in launch-review.md with the full rendered email, personalization examples, verified audience and sender/settings. Include selected audience criteria, business-cohort count, actual delivery count and selected message direction. Invite content edits: “You can request changes to any wording. When you are ready to send, say “Launch this campaign.”” Only show launch availability when all gates pass.
 
 On revision, change only affected decisions and regenerate/revalidate the preview. Preserve unrelated choices. A fresh preview is required for material changes; never ask permission to perform its YAML/API updates.
 
 ## 5. Launch and result
 
-Execute once after explicit launch instruction for the current completed preview. Retain all existing launch gates and reporting rules.
+Execute once after explicit approval to launch the current completed review report. Retain all existing launch gates and reporting rules. After observed delivery completion, ask once whether to show the performance report using the business-choice tool. Follow performance-report.md for the delivery-event query and presentation; if reporting was already requested, generate it directly. Refresh requests re-query and update the same campaign report.
 
 ## Shortcut and explicit requests
 

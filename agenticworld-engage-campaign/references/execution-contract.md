@@ -30,7 +30,7 @@ tdx delivery senders --output json
 tdx engage campaign push --help
 ```
 
-Check `tdx delivery --help` or the relevant command help automatically if sender syntax is uncertain. Do not print a permission question or invoke a choice tool for these commands. The supplied Engage reference does not establish delivery sender flags; use installed help to verify them. Do not extend discovery permission into unrelated destructive commands.
+Use `tdx delivery senders` for sender listing. Never infer that sender listing belongs to the Engage namespace. Do not append `--workspace` to delivery commands unless their installed help explicitly supports it; verify workspace association separately from actual workspace configuration/readiness. Check `tdx delivery --help` or the relevant command help automatically if sender syntax is uncertain. Do not print a permission question or invoke a choice tool for these commands. The supplied Engage reference does not establish delivery sender flags; use installed help to verify them. Do not extend discovery permission into unrelated destructive commands.
 
 ## Read-only discovery without conversational approval
 
@@ -40,7 +40,7 @@ For the reported discovery sequence, use the following direct commands when thei
 
 ```bash
 tdx engage workspaces --output json
-tdx engage senders
+tdx delivery senders
 tdx engage campaigns
 ```
 
@@ -66,6 +66,6 @@ Continuing a conversation, correcting copy, changing a choice, polling status or
 
 ## Launch gates
 
-Require completed import; eligible participant included exactly once; exact eligible row count and unique destination count; verified SES route for success simulator sample recipients, preserving documented plus labels; verified service deduplication behavior; no placeholder or denied recipients; supported profile merge tags; saved HTML and subject; verified sender; verified table/source mappings and YAML companion paths; authorized assets and established offer; configured HTTPS CTA; unsubscribe system tag; successful service validation; displayed current fingerprint; explicit launch instruction after preview. Persist launch intent before calling launch. A changed offer/audience/sender/content requires a fresh preview and launch instruction.
+Require completed import; eligible participant included exactly once; exact eligible row count and unique destination count; verified SES route for success simulator sample recipients, preserving documented plus labels; verified service deduplication behavior; no placeholder or denied recipients; supported profile merge tags; saved HTML and subject; verified sender; verified table/source mappings and YAML companion paths; authorized assets and established offer; configured HTTPS CTA; unsubscribe system tag; successful service validation; displayed four-section completed campaign review report with current fingerprint; explicit approval to launch that report version. Persist launch intent before calling launch. A changed offer/audience/sender/content requires a fresh preview and launch instruction.
 
 Read delivery status through supported APIs. Submission is not delivery, delivery is not inbox placement. Summarize bounces/errors from actual reporting. Technical problems go to host-facing remediation without requesting repeated participant approval.
