@@ -246,11 +246,43 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("part of the actual send target", (ROOT / "references/api-contract.md").read_text(encoding="utf-8"))
         self.assertIn("example.test", self.campaign)
 
+    def test_campaign_setup_trigger_and_resource_choices(self):
+        self.assertIn("I want to set up an email campaign", self.campaign)
+        for choice in ("Agentic World Workspace", "Template Email - Northstar", "Northstar Email", "Create new"):
+            with self.subTest(choice=choice):
+                self.assertIn(choice, self.campaign)
+        self.assertIn("only if it is actually present", self.campaign)
+        self.assertIn("ask for the new workspace name", self.campaign)
+        self.assertIn("delivery audience", self.campaign.lower())
+        self.assertIn("CSV staged as a ListCampaign contact list", self.campaign)
+        marketplace = (ROOT.parent / ".claude-plugin/marketplace.json").read_text(encoding="utf-8")
+        self.assertIn("set up or create an email campaign", marketplace)
+
+    def test_new_audience_invokes_intake_and_resumes_setup(self):
+        self.assertIn("invoke `agenticworld-profile-csv-intake` with existing answers", self.campaign)
+        self.assertIn("resume this setup flow", self.campaign)
+        self.assertIn("does not upload CSV directly or create a CDP Audience", self.campaign)
+
+    def test_new_template_uses_documented_yaml_workflow(self):
+        for contract in ("type: template", "editor_type: grapesjs", "engage template validate", "engage template push", "--dry-run", "--yes"):
+            self.assertIn(contract, self.campaign)
+        references = (ROOT / "references/template-and-merge-tags.md").read_text(encoding="utf-8")
+        self.assertIn("No generic workspace-creation or sender-creation procedure", references)
+        self.assertIn("If compatibility or preview cannot be verified, stop", references)
+
+    def test_new_resource_paths_fail_closed_when_unsupported(self):
+        self.assertIn("If no supported operation is available", self.campaign)
+        self.assertIn("sender-creation operation only if available", self.campaign)
+        self.assertIn("stop the new-template branch", self.campaign)
+        self.assertNotIn("engage workspace create", self.campaign.lower())
+        self.assertNotIn("delivery sender create", self.campaign.lower())
+
     def test_readonly_discovery_is_batched_and_reported_once(self):
         for command in (
             "<verified-tdx-command> whoami",
-            "<verified-tdx-command> engage workspace list",
-            "<verified-tdx-command> engage template list --workspace",
+            "<verified-tdx-command> engage workspaces",
+            "<verified-tdx-command> engage templates",
+            "<verified-tdx-command> delivery senders --workspace",
         ):
             self.assertIn(command, self.campaign)
         self.assertIn("never ask “May I run these?”", self.campaign)

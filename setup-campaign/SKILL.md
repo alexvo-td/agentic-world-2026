@@ -1,6 +1,6 @@
 ---
 name: setup-campaign
-description: Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after one final confirmation. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, preview-confirmed launch, and status read-back for the exact generated campaign. Reuse the exact verified tdx 2026.9.3 runner handed off by agenticworld-profile-csv-intake. Performance reporting is excluded from this version.
+description: Use when a user explicitly asks to set up or create an email campaign, for example “I want to set up an email campaign,” using a reviewed CSV from agenticworld-profile-csv-intake. Help select or create a supported Engage workspace, template, sender, and CSV recipient list; stage a ListCampaign, preview it, show a consolidated settings report, and send only after one final confirmation. Reuse the exact verified tdx 2026.9.3 runner from intake. Performance reporting is excluded.
 ---
 
 # Motion 1 — Create your email and receive it
@@ -43,7 +43,7 @@ Treat Northstar as the approved fictional workshop brand. Fictional branding alo
 
 ## Setup authorization and marketer interaction
 
-Treat a campaign creation request as authorization for necessary setup within the selected account, workspace, database, and reviewed recipient scope. Run version checks, account/workspace/template/sender discovery reads, CSV validation, unique table creation, INSERT, configuration, dry-runs, DRAFT saves, previews, and status read-back without separate conversational approval. Run read-only discovery as one batch; never ask “May I run these?” or request permission for each command. Reuse workshop data handling and technical defaults. Ask only for missing campaign choices, actual source corrections, or necessary scope changes. Do not ask marketers to approve commands, SQL, or DRAFT saves. Respect any host/runtime permission prompt; never bypass it.
+Treat a campaign creation request as authorization for necessary setup within the selected account, workspace, database, and reviewed recipient scope. Run version checks, account/workspace/template/sender discovery reads, CSV validation, unique table creation, INSERT, configuration, dry-runs, DRAFT saves, previews, and status read-back without separate conversational approval. Run read-only discovery as one batch without a command-announcement preamble; never ask “May I run these?”, say “Command I’ll run,” or request permission for each authorized command. Report the results in the single final settings summary. Reuse workshop data handling and technical defaults. Ask only for missing campaign choices, actual source corrections, or necessary scope changes. Do not ask marketers to approve commands, SQL, or DRAFT saves. Respect any host/runtime permission prompt; never bypass it.
 
 At the final review, show one consolidated settings report with account/site/profile, workspace, database/table, template, sender, verified tdx runner/version, and any unresolved settings, alongside the exact preview, recipient set/count (the participant plus all approved test destinations), and send-now timing. Do not ask a separate question to approve running discovery commands or to confirm settings alone. If any send-critical item is unresolved, report it and stop before send. Otherwise ask once whether to send the exact campaign using the reported settings to the displayed recipients now. Launch that unchanged campaign once after confirmation; do not ask again to execute the command. CLI `--yes` handles supported CLI prompts for already authorized actions. Runtime approvals and account permissions remain in force; never evade denial. Do not change permissions, overwrite tables, modify shared templates, or expand the audience as incidental setup.
 
@@ -56,29 +56,39 @@ At the final review, show one consolidated settings report with account/site/pro
 - Reuse existing approved authentication; never request or display credentials. In Treasure Work, direct authentication problems to Settings → Add Account/Re-authenticate. In AI Studio, ask the operator to check the connection
 - Performance dashboards, delivery/engagement KPI queries, and report generation are excluded from this version
 
-## 1. Continue from the reviewed CSV
+## 1. Start setup and select resources
 
-Default to **Agentic World Workspace**, while verifying the actual account and workspace. Preserve the participant's campaign name and template. If needed, suggest `Agentic World Engage Workshop.firstname.lastname` for confirmation. Never reuse sample names or environment-bound IDs
+Activate this Skill when the user explicitly asks to set up or create an email campaign, for example “I want to set up an email campaign.” A request to create a CSV alone does not trigger campaign setup. Once activated, reuse existing answers and ask one friendly resource-choice question at a time. Do not ask for approval to run the discovery commands.
 
-Require a saved CSV path and non-PII handoff. If missing, invoke `agenticworld-profile-csv-intake` with the existing answers. Only offer a follow-up prompt if invocation is unavailable. Do not collect real rows again here
+Use the actual read-only discovery results to present available choices, with a **Create new** option for each category:
 
-Verify data mode, collection/retention/destination approvals, the workshop-send authorization in the intake handoff, columns/count/key, blank/time policy, approved limits, and prepared runner. Revalidate the saved file. Use the established Northstar re-engagement objective and warm tone. Ask about the creative angle or necessary CTA details only when unresolved; do not make participants configure YAML or mappings or repeat profile questions already answered
+- **Workspace:** list workspaces returned by discovery; show `Agentic World Workspace` as a preferred option only if it is actually present. If **Create new** is selected and a documented workspace-creation operation is available, ask for the new workspace name and create it with that operation. If no supported operation is available, report the limitation and stop this branch without inventing an API or command.
+- **Email template:** list templates in the selected workspace; show `Template Email - Northstar` as a preferred option only if it is actually present. If **Create new** is selected, collect the template name, subject, and required content without inventing offers or URLs. Use the documented Engage template workflow: write a YAML definition with `type: template`, the selected `workspace`, `editor_type: grapesjs`, and a companion HTML file; include mapped variables as required. Then run `<verified-tdx-command> engage template validate "<template-yaml>"`, `<verified-tdx-command> engage template push "<template-yaml>" --dry-run`, preview with a supported renderer, and `<verified-tdx-command> engage template push "<template-yaml>" --yes`. Re-list/read back the saved template by name. Verify the result is compatible with ListCampaign mapping and preview before selecting it; if compatibility cannot be confirmed, stop the new-template branch. Do not alter an existing shared template.
+- **Email sender:** list senders for the selected workspace; show `Northstar Email` as a preferred option only if it is actually present. If **Create new** is selected, use a documented sender-creation operation only if available and all required verified sender details are supplied. Otherwise report that sender provisioning must be completed by an operator; never invent sender IDs, addresses, or domain verification.
+- **Delivery audience:** list the actual CSV filename/path from the Intake handoff and let the user select it. If **Create new** is selected, invoke `agenticworld-profile-csv-intake` with existing answers; when it returns the saved CSV handoff, resume this setup flow. This audience is the reviewed CSV staged as a ListCampaign contact list, not a CDP or Engage Audience.
 
-Use the intake handoff's authorized recipient composition: one participant-provided address plus 30 approved test recipients for the default 31-row workshop flow. These approved test addresses are part of the send target and must not be silently removed. `example.test` fixture addresses are draft/preview-only. Resolve third-party scope outside the established workshop setup with the operator
+Require the selected or newly created resources to be verified in the actual account/workspace. Preserve the participant's campaign name; if needed, suggest `Agentic World Engage Workshop.firstname.lastname`. Never assume environment-bound IDs or present the preferred names as available without a matching discovery result.
+
+Verify data mode, collection/retention/destination approvals, the workshop-send authorization in the intake handoff, columns/count/key, blank/time policy, approved limits, and prepared runner. Revalidate the saved CSV. Use the established Northstar re-engagement objective and warm tone. Ask about the creative angle or necessary CTA details only when unresolved; do not make participants configure YAML or mappings or repeat profile questions already answered.
+
+Use the intake handoff's authorized recipient composition: one participant-provided address plus 30 approved test recipients for the default 31-row workshop flow. These approved test addresses are part of the send target and must not be silently removed. `example.test` fixture addresses are draft/preview-only. Resolve third-party scope outside the established workshop setup with the operator.
 
 ## 2. Verify the prepared environment
 
 Require exact tdx version `2026.9.3`. Reuse the verified command only when checked in the actual campaign runtime; do not accept a different version or use a check from another runtime. Intake either verifies installed `tdx` or prepares the pinned package with npx and verifies its version. In every command example below, `<verified-tdx-command>` is a placeholder for the exact runner command from the handoff: either `tdx` or `npx --yes --package=@treasuredata/tdx@2026.9.3 tdx`. Use it unchanged for every campaign operation; do not substitute another version, add `--offline`, or reconstruct a different invocation. If the handoff lacks a successful exact-version check, return to intake to prepare and verify it; do not proceed with campaign operations.
 
-Run the account, workspace, and template discovery reads together immediately after the campaign request, using the verified runner. These are authorized read-only setup operations: do not ask “May I run these?” or request confirmation before running them.
+Run read-only account/workspace discovery immediately after the campaign request, using the verified runner, without any approval-seeking preamble. After the user selects a workspace, run template/sender discovery for that workspace without asking permission. These reads are authorized setup operations; do not ask “May I run these?”, say “Command I’ll run,” or request confirmation before any individual command.
 
 ```bash
 <verified-tdx-command> whoami
-<verified-tdx-command> engage workspace list
-<verified-tdx-command> engage template list --workspace "<verified-workspace>"
+<verified-tdx-command> engage workspaces
+
+# After the user selects a workspace:
+<verified-tdx-command> engage templates
+<verified-tdx-command> delivery senders --workspace "<verified-workspace>"
 ```
 
-Read the selected workspace's sender list through its supported read-only lookup as part of the same discovery step; do not invent a command if none is documented. Record results for the single final settings report rather than asking the participant to approve each read. Workshop candidates are site `us01`, database `agentic_world_demo`, and sender `info@agenticworld.treasure-engage-testing.click`. Verify them rather than assuming sample IDs. Pass the confirmed workspace explicitly to all ListCampaign commands
+Filter template results to the selected workspace using the documented output; do not invent CLI flags. If installed help for the verified runner documents a workspace-scoped template-list command, use that supported form. If sender discovery is unavailable, report that as unresolved and stop before using an unverified sender. Record read-back values for the single final settings report. Workshop candidates are site `us01`, database `agentic_world_demo`, and sender `info@agenticworld.treasure-engage-testing.click`; verify them rather than assuming sample IDs. Pass the confirmed workspace explicitly to all ListCampaign commands
 
 ## 3. Prepare the recipient list
 

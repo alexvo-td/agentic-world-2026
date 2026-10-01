@@ -29,6 +29,14 @@ Use the profile-prefixed token `{{ profile.first_name }}` for the mapped first n
 - Obtain `email.sender_id` from the workspace's actual sender list; never infer it from an address or URL
 - Reject path traversal and symlink escapes
 
+## Create a new template when selected
+
+Create a template only when the participant explicitly selects **Create new**. Ask for the new template name, subject, complete message copy, approved assets/CTA, and required personalization. Do not invent offers, prices, URLs, or claims. Write a `type: template` YAML plus companion HTML using the selected workspace and `editor_type: grapesjs`; define variables for each supported merge tag. Use the verified runner to validate, push a dry-run, preview with a supported renderer, and then save the new template. Re-list/read back the template by name before using it in ListCampaign.
+
+Verify that the saved template's variable/merge-tag behavior is compatible with ListCampaign mapping and the `{{ profile.<attribute_name> }}` tokens in this Skill. If compatibility or preview cannot be verified, stop before campaign delivery. A user-selected new template authorizes creating that new resource under setup scope; it does not authorize sending.
+
+No generic workspace-creation or sender-creation procedure is defined here. If a user selects **Create new** for either and no documented supported operation is available, report the operator provisioning step and do not guess API paths, IDs, or commands.
+
 ## Sender and delivery content
 
 Use the approved sender and verify its unsubscribe mechanism in ListCampaign. A standard template's `{{sender.unsubscribe_url}}` is not proof that the ListCampaign renderer supports it. Do not claim unsubscribe rendering is verified until tested with the actual renderer.
