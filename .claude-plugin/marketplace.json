@@ -28,17 +28,17 @@
       ]
     },
     {
-      "name": "motion1-csv-list-campaign",
-      "description": "Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after approval. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, approval-gated launch, and status read-back for the exact generated campaign. Reuse tdx 2026.9.2 prepared by agenticworld-profile-csv-intake. Performance reporting is excluded from this version.",
+      "name": "setup-campaign",
+      "description": "Use when a Motion 1 participant wants to create a one-off Engage email from a reviewed CSV, preview it, and send it after one final confirmation. Handle contact-list staging, ListCampaign configuration, personalization, sender settings, preview-confirmed launch, and status read-back for the exact generated campaign. Reuse exact tdx 2026.9.3 verified by agenticworld-profile-csv-intake. Performance reporting is excluded from this version.",
       "source": "./",
       "strict": false,
       "skills": [
-        "./motion1-csv-list-campaign"
+        "./setup-campaign"
       ]
     },
     {
       "name": "agenticworld-profile-csv-intake",
-      "description": "Prepare a Agentic World workshop audience CSV by collecting participant information in one interaction and adding 30 fictional profiles with safe test recipients. Use for workshop self-send, sample audiences, profile CSV creation, or personalized email previews. Check existing tdx 2026.9.3 before campaign setup without reinstalling a correct runtime. Hand campaign creation and delivery to motion1-csv-list-campaign.",
+      "description": "Prepare an Agentic World workshop audience CSV by reusing supplied profile values, asking once in an ordinary message for missing required details, and adding 30 approved test recipients. Use for workshop email audiences and profile CSV creation. Reuse installed tdx 2026.9.3 or prepare and verify that exact version with npx; hand the verified runner command to setup-campaign.",
       "source": "./",
       "strict": false,
       "skills": [

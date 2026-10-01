@@ -1,7 +1,0 @@
-email,first_name,last_name,preferred_category,notes
-ada@example.test,Ada,Example,books,"contains, comma"
-grace@example.test,Grace,Example,home,"line one
-line two"
-,Missing,Email,books,blank required value
-ada@example.test,Duplicate,Email,books,duplicate email
-not-an-email,Invalid,Address,home,invalid email format
