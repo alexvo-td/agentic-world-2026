@@ -37,6 +37,6 @@ Show a rendered personalized email followed by the summary:
 | Settings | One-off, intended Engage workspace, timing, tracking settings |
 | Status | Draft / blocked / Ready to launch based on evidence |
 
-Show “Launch this campaign” as the sole business action once ready. Do not add a second confirmation after the participant chooses it. Explain exclusions plainly, e.g. “31 profiles saved; your email is the only delivery address. Sample addresses are for analysis.”
+Show “Launch this campaign” as the sole business action once ready. Do not add a second confirmation after the participant chooses it. Explain actual selection and destinations plainly: generated samples route to the SES success simulator, while the participant receives their own personalized email. Show selected profile rows, unique destinations, excluded rows and service-reported send count separately; simulator events do not represent human inbox engagement.
 
 Fingerprint the campaign ID, HTML, subject, eligible CSV, sender and settings. Save the fingerprint with preview state. Local rendering demonstrates personalization but is not proof of server merge behavior. Validate service configuration independently.

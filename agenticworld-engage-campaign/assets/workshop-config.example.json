@@ -11,5 +11,8 @@
     "rug": null,
     "lamp": null
   },
-  "minimum_runtime_version": "2026.9.3"
+  "minimum_runtime_version": "2026.9.3",
+  "sample_recipient_address": "success@simulator.amazonses.com",
+  "sample_delivery_provider": "amazon_ses",
+  "sample_recipient_pattern": "success+sample{index:03d}@simulator.amazonses.com"
 }
