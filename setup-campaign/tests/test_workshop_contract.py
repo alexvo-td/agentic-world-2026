@@ -173,7 +173,9 @@ class SkillContractTests(unittest.TestCase):
         self.assertEqual(parser.language, "en")
         self.assertIn("script-src 'none'", parser.csp)
         self.assertTrue(set(parser.tags).isdisjoint({"script", "form", "input", "button", "iframe"}))
-        self.assertIn("send", "".join(parser.text).lower())
+        page_text = "".join(parser.text).lower()
+        self.assertIn("send", page_text)
+        self.assertIn("final settings summary", page_text)
 
     def test_markdown_fences_and_skill_names(self):
         for path in [ROOT / "SKILL.md", ROOT.parent / "agenticworld-profile-csv-intake/SKILL.md", ROOT / "references/api-contract.md", ROOT / "references/template-and-merge-tags.md"]:
@@ -243,6 +245,26 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("one participant-provided address plus 30 approved test recipients", self.campaign)
         self.assertIn("part of the actual send target", (ROOT / "references/api-contract.md").read_text(encoding="utf-8"))
         self.assertIn("example.test", self.campaign)
+
+    def test_readonly_discovery_is_batched_and_reported_once(self):
+        for command in (
+            "<verified-tdx-command> whoami",
+            "<verified-tdx-command> engage workspace list",
+            "<verified-tdx-command> engage template list --workspace",
+        ):
+            self.assertIn(command, self.campaign)
+        self.assertIn("never ask “May I run these?”", self.campaign)
+        self.assertIn("one consolidated settings report", self.campaign.lower())
+        self.assertIn("do not ask a separate question to approve running discovery commands", self.campaign.lower())
+
+    def test_postal_address_is_not_required_for_workshop_demo(self):
+        self.assertIn("postal address is not required", self.campaign.lower())
+        self.assertIn("for a production send to real customer recipients, require the approved postal address", self.campaign.lower())
+        reference = (ROOT / "references/api-contract.md").read_text(encoding="utf-8").lower()
+        self.assertIn("a postal address is not required for a workshop demo", reference)
+        checklist = (ROOT / "operator-checklist.md").read_text(encoding="utf-8").lower()
+        self.assertIn("does not require a postal address", checklist)
+        self.assertIn("remove any address placeholder", checklist)
 
     def test_setup_and_draft_have_no_separate_chat_approval(self):
         for text in (self.campaign, (ROOT / "README.md").read_text(encoding="utf-8"),

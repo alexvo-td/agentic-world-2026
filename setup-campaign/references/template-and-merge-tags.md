@@ -33,9 +33,9 @@ Use the profile-prefixed token `{{ profile.first_name }}` for the mapped first n
 
 Use the approved sender and verify its unsubscribe mechanism in ListCampaign. A standard template's `{{sender.unsubscribe_url}}` is not proof that the ListCampaign renderer supports it. Do not claim unsubscribe rendering is verified until tested with the actual renderer.
 
-Use the account owner's approved postal address. Never invent CTA URLs, prices, offers, dates, purchase history, or asset approval. Email images need approved HTTPS URLs accessible to recipients; do not use local paths or unapproved assets.
+A postal address is not required for a workshop demo limited to the participant and approved test recipients; remove any postal-address placeholder rather than inventing an address. For production sends to real customer recipients, use the account owner's approved postal address. Never invent CTA URLs, prices, offers, dates, purchase history, or asset approval. Email images need approved HTTPS URLs accessible to recipients; do not use local paths or unapproved assets.
 
-The fictional Northstar Home & Living brand may be used for a workshop email when all delivery requirements are verified. Any unverified benchmark-price mock or supplied assets are draft-only: do not copy unverified claims, URLs, images, CTA, postal address, or unsubscribe behavior into a live campaign without validation and approval. `example.test` recipients are preview-only and not eligible delivery targets.
+The fictional Northstar Home & Living brand may be used for a workshop email when required delivery details are verified. Any unverified benchmark-price mock or supplied assets are draft-only: do not copy unverified claims, URLs, images, CTA, or unsubscribe behavior into a live campaign without validation and approval. Remove postal-address placeholders; an address is not required for a workshop demo limited to the participant and approved test recipients. `example.test` recipients are preview-only and not eligible delivery targets.
 
 ## Distinguish the checks
 
@@ -52,14 +52,14 @@ A local snapshot must be labeled **static content preview** and compared with th
 ## Final review
 
 - Subject/body, personalization, and blank-value handling
-- Sender, CTA/link, asset access, unsubscribe, and approved postal address
+- Sender, CTA/link, asset access, and unsubscribe; require an approved postal address only for production sends to real customer recipients
 - Workspace, exact generated ID/version, content hash, mapping, template/sender IDs
 - Exact match between the full reviewed CSV and frozen table, with one participant address plus 30 approved test-recipient destinations for the default 31-row workshop send; `example.test` is preview-only
 
-Show the exact preview, sender, actual recipient composition/count, and “send now” action. Full addresses belong only in an allowed private review, never a shared HTML artifact. Bind the single final send confirmation to that review; changes invalidate it. Do not ask separate conversational approvals for CSV saving, SQL/setup, or DRAFT saving.
+Show one consolidated settings report (account/workspace/database, template, sender, runner/version, and recipient composition), the exact preview, actual recipient set/count, and “send now” action. Full addresses belong only in an allowed private review, never a shared HTML artifact. Bind the single final send confirmation to that report and preview; changes invalidate it. Do not ask separate conversational approvals for discovery commands, settings alone, CSV saving, SQL/setup, or DRAFT saving.
 
 After the final confirmation, verify the same target and launch once with the same verified tdx runner. Non-TTY CLI `--yes` is allowed only after the human's exact final send confirmation; application approval and runtime permissions remain enforced. See `api-contract.md` for commands and read-back.
 
-Any unverified claims, CTA destination, image authorization/access, postal address, or unsubscribe behavior keep content draft-only. Never reuse historical static-sample counts or state as facts for a new run.
+Any unverified claims, CTA destination, image authorization/access, or unsubscribe behavior keep content draft-only. For production to real customer recipients, an unverified postal address also blocks sending; it is not required for the workshop demo. Never reuse historical static-sample counts or state as facts for a new run.
 
 💎 Generated with [Treasure Work](https://github.com/treasure-work)

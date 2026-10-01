@@ -24,10 +24,10 @@ The workshop send target is one participant-provided address plus 30 approved te
 
 - Reuse installed tdx only when it reports exactly `2026.9.3` in the campaign runtime. If missing or mismatched, intake prepares and verifies `@treasuredata/tdx@2026.9.3` with npx, then passes the exact same runner command to this Skill
 - ListCampaign uses a staged contact-list table, not direct CSV upload or a CDP Audience/segment
-- The Skill validates the file, maps actual table columns, uses `{{ profile.first_name }}` for personalization, and verifies workspace/template/sender with existing authentication
+- The Skill batches read-only account/workspace/template/sender discovery under campaign setup authorization, then reports the collected settings once in the final review; it validates the file, maps actual table columns, and personalizes with `{{ profile.first_name }}`
 - An authorized campaign request covers necessary setup, CSV loading, SQL execution, DRAFT save, previews, and read-back without separate conversational approvals
 - Push/launch dry-runs do not render email, count eligible recipients, or prove consent. Verify those separately
-- Non-TTY execution uses CLI `--yes` for already authorized operations; the final send command runs only after the single exact-preview-linked confirmation. Runtime approval and permissions remain enforced
+- Non-TTY execution uses CLI `--yes` for already authorized operations; the final settings report, exact preview, and recipient set are covered by one send confirmation. Runtime approval and permissions remain enforced
 - The exact ID returned by campaign creation is carried through preview, launch, and status read-back. Never guess the latest campaign
 - Freeze the run-only recipient table and bind content/row-set fingerprints to final approval. Stop if write exclusion cannot be established
 
@@ -48,7 +48,7 @@ Environment-bound campaign/template YAML, credentials, real profiles, generated 
 
 Default to Agentic World Workspace, but verify the actual account/workspace and sender IDs. Never assume environment-bound IDs or reuse unverified sample values. Confirm each CTA instead of automatically using a landing-page host.
 
-Northstar Home & Living is a fictional workshop brand, not a reason by itself to block sending. A send requires verified claims, CTA destination, authorized/access-verified images, sender, postal address, and unsubscribe behavior. Any unverified benchmark/mock content or assets supplied for a run remain draft-only until those details are resolved; do not invent missing values. `example.test` recipients are not deliverable. No campaign or CSV example data is bundled.
+Northstar Home & Living is a fictional workshop brand, not a reason by itself to block sending. A workshop demo to the participant and approved test recipients does not require a postal address; remove any postal-address placeholder rather than inventing one. Production sends to real customer recipients require the approved address. Verify CTA behavior, asset authorization/access, sender, and unsubscribe behavior. Any unverified benchmark/mock content or assets supplied for a run remain draft-only; do not invent missing values. `example.test` recipients are not deliverable. No campaign or CSV example data is bundled.
 
 ## Current scope and validation
 
