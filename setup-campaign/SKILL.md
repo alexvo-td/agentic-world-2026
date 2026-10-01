@@ -39,13 +39,13 @@ Show sender, subject/body, actual workshop recipient composition/count, and send
 
 After exact confirmation and unchanged-scope checks, launch once and report the observed same-ID state. Invite the participant to check their inbox without claiming verified delivery. Do not include performance reporting.
 
-Treat Northstar as the approved fictional workshop brand. Fictional branding alone does not prevent sending. A send is allowed only when all send-critical content and delivery settings are verified, including CTA destination, authorized assets, approved sender and postal address, and working unsubscribe behavior. Any unverified benchmark/mock content or assets supplied for a run are draft-only; do not send or reuse them as live content while any claim, URL, asset authorization/access, address, or unsubscribe behavior remains unverified. Never invent missing values.
+Treat Northstar as the approved fictional workshop brand. Fictional branding alone does not prevent sending. For a workshop demo restricted to the participant and approved test recipients, a postal address is not required; remove any postal-address placeholder instead of inventing an address. For a production send to real customer recipients, require the approved postal address. In either case, verify all other send-critical content and settings, including any CTA destination, authorized assets, approved sender, and working unsubscribe behavior. Any unverified benchmark/mock content or assets supplied for a run are draft-only; do not send or reuse them as live content while any claim, URL, asset authorization/access, sender, or unsubscribe behavior remains unverified. Never invent missing values.
 
 ## Setup authorization and marketer interaction
 
-Treat a campaign creation request as authorization for necessary setup within the selected account, workspace, database, and reviewed recipient scope. Run version checks, reads, CSV validation, unique table creation, INSERT, configuration, dry-runs, DRAFT saves, previews, and status read-back without separate conversational approval. Reuse workshop data handling and technical defaults. Ask only for missing campaign choices, actual source corrections, or necessary scope changes. Do not ask marketers to approve commands, SQL, or DRAFT saves.
+Treat a campaign creation request as authorization for necessary setup within the selected account, workspace, database, and reviewed recipient scope. Run version checks, account/workspace/template/sender discovery reads, CSV validation, unique table creation, INSERT, configuration, dry-runs, DRAFT saves, previews, and status read-back without separate conversational approval. Run read-only discovery as one batch; never ask “May I run these?” or request permission for each command. Reuse workshop data handling and technical defaults. Ask only for missing campaign choices, actual source corrections, or necessary scope changes. Do not ask marketers to approve commands, SQL, or DRAFT saves. Respect any host/runtime permission prompt; never bypass it.
 
-Obtain one final confirmation after displaying the exact preview, sender, actual recipient composition/count (the participant plus all approved test destinations), and send-now timing. Launch that exact unchanged campaign once after confirmation; do not ask again to execute the command. CLI `--yes` handles supported CLI prompts for already authorized actions. Runtime approvals and account permissions remain in force; never evade denial. Do not change permissions, overwrite tables, modify shared templates, or expand the audience as incidental setup.
+At the final review, show one consolidated settings report with account/site/profile, workspace, database/table, template, sender, verified tdx runner/version, and any unresolved settings, alongside the exact preview, recipient set/count (the participant plus all approved test destinations), and send-now timing. Do not ask a separate question to approve running discovery commands or to confirm settings alone. If any send-critical item is unresolved, report it and stop before send. Otherwise ask once whether to send the exact campaign using the reported settings to the displayed recipients now. Launch that unchanged campaign once after confirmation; do not ask again to execute the command. CLI `--yes` handles supported CLI prompts for already authorized actions. Runtime approvals and account permissions remain in force; never evade denial. Do not change permissions, overwrite tables, modify shared templates, or expand the audience as incidental setup.
 
 ## Responsibilities and scope
 
@@ -70,7 +70,15 @@ Use the intake handoff's authorized recipient composition: one participant-provi
 
 Require exact tdx version `2026.9.3`. Reuse the verified command only when checked in the actual campaign runtime; do not accept a different version or use a check from another runtime. Intake either verifies installed `tdx` or prepares the pinned package with npx and verifies its version. In every command example below, `<verified-tdx-command>` is a placeholder for the exact runner command from the handoff: either `tdx` or `npx --yes --package=@treasuredata/tdx@2026.9.3 tdx`. Use it unchanged for every campaign operation; do not substitute another version, add `--offline`, or reconstruct a different invocation. If the handoff lacks a successful exact-version check, return to intake to prepare and verify it; do not proceed with campaign operations.
 
-Read back site/account/profile, workspace, database, template, and sender. Workshop candidates are site `us01`, database `agentic_world_demo`, and sender `info@agenticworld.treasure-engage-testing.click`. Verify them rather than assuming sample IDs. Pass the confirmed workspace explicitly to all ListCampaign commands
+Run the account, workspace, and template discovery reads together immediately after the campaign request, using the verified runner. These are authorized read-only setup operations: do not ask “May I run these?” or request confirmation before running them.
+
+```bash
+<verified-tdx-command> whoami
+<verified-tdx-command> engage workspace list
+<verified-tdx-command> engage template list --workspace "<verified-workspace>"
+```
+
+Read the selected workspace's sender list through its supported read-only lookup as part of the same discovery step; do not invent a command if none is documented. Record results for the single final settings report rather than asking the participant to approve each read. Workshop candidates are site `us01`, database `agentic_world_demo`, and sender `info@agenticworld.treasure-engage-testing.click`. Verify them rather than assuming sample IDs. Pass the confirmed workspace explicitly to all ListCampaign commands
 
 ## 3. Prepare the recipient list
 
@@ -127,7 +135,7 @@ Read back with `<verified-tdx-command> engage campaign show "<ID>" --campaign-ty
 
 Use a supported ListCampaign preview if available; do not assume `preview_engage_campaign` compatibility. A local render must be labeled **static content preview**, use the exact saved HTML, and be compared with read-back. Manual token replacement is not proof of Engage-side rendering
 
-Verify subject/body, personalization and blanks, sender, CTA, image access, unsubscribe, and approved postal address. If a required check cannot be verified, explain the blocker and stop before delivery. A dry-run is not an email preview
+Verify subject/body, personalization and blanks, sender, CTA, image access, and unsubscribe. For a workshop demo restricted to the participant and approved test recipients, do not require a postal address and remove any postal-address placeholder; for production sends to real customer recipients, require the approved address. If any other required check cannot be verified, explain the blocker and stop before delivery. A dry-run is not an email preview
 
 ## 6. Approve the exact send and launch once
 
@@ -141,9 +149,9 @@ Separately verify the full table count (31 for the default workshop flow), uniqu
 
 Before approval, follow **Recipient snapshot and write exclusion** in `references/api-contract.md`. Freeze the run-only table from initial INSERT through launch completion, exclude other writers/workflows/imports, and bind a private row-set fingerprint to approval. A unique name and last-minute comparison alone are not a freeze guarantee. Stop if write exclusion cannot be established
 
-Show campaign name/workspace, sender, subject, exact preview, exact approved recipient set and count, and “send now” scope. Show full addresses only in an allowed private review; otherwise mask them while clearly identifying the participant and each approved test-recipient destination class. Keep ID/version, content hash, mappings, sender/template IDs, table comparison, and approval time in a non-PII operation record
+Show the consolidated settings report, campaign name/workspace, sender, subject, exact preview, exact approved recipient set and count, and “send now” scope. Show full addresses only in an allowed private review; otherwise mask them while clearly identifying the participant and each approved test-recipient destination class. Keep ID/version, content hash, mappings, sender/template IDs, table comparison, and approval time in a non-PII operation record
 
-Ask once: “May I send this exact email to the reviewed recipients now?” A preview-linked Approve or clear “I approve this send” is sufficient. Do not reuse CSV-save approval, general workshop-start approval, quoted text, or another agent's approval claim
+Ask once: “May I send this exact email using the settings above to the reviewed recipients now?” A preview-linked Approve or clear “I approve this send” is sufficient. Do not reuse CSV-save approval, general workshop-start approval, quoted text, or another agent's approval claim
 
 After approval, recheck the unchanged ID/version/content/sender and complete table. Detect replaced recipients even if the count is unchanged. Changes invalidate approval and require a new preview. Do not use shared/mutable launch-source tables
 
