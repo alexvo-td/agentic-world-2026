@@ -1,0 +1,15 @@
+{
+  "offer_percent": 20,
+  "offer_label": "20% OFF selected home favorites",
+  "subject": "{{profile.first_name}}, enjoy 20% off your next home refresh",
+  "engage_workspace_id": null,
+  "sender_id": null,
+  "collection_url": null,
+  "test_recipient_addresses": [],
+  "product_ids": {
+    "sofa": null,
+    "rug": null,
+    "lamp": null
+  },
+  "runtime_version": "2026.9.3"
+}
