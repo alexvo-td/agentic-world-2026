@@ -33,7 +33,7 @@ Do not collect credentials, tokens, government IDs, payment data, or unrelated s
 
 ## Verify or prepare the tdx runner
 
-Skip runtime setup for CSV-only requests. For campaign continuation, work in the exact runtime that will execute the campaign.
+Skip runtime setup for CSV-only requests. For campaign continuation, work in the exact runtime that will execute the campaign. Treat the required version check as authorized read-only setup: run it without asking “May I run this?” or announcing “Command I’ll run” and waiting for approval. If npx preparation is needed, do not request a separate conversational approval for this authorized setup step. Always respect host/runtime permission prompts; never bypass them.
 
 First check the installed runner:
 
