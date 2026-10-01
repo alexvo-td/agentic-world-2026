@@ -1,27 +1,38 @@
 ---
 name: agenticworld-profile-csv-intake
-description: Prepare a Agentic World workshop audience CSV by collecting participant information in one interaction and adding 30 fictional profiles with safe test recipients. Use for workshop self-send, sample audiences, profile CSV creation, or personalized email previews. Check existing tdx 2026.9.3 before campaign setup without reinstalling a correct runtime. Hand campaign creation and delivery to motion1-csv-list-campaign.
+description: Prepare a Agentic World workshop audience CSV by collecting participant information through free-text Question inputs and adding 30 fictional profiles with safe test recipients. Use for workshop self-send, sample audiences, profile CSV creation, or personalized workshop emails. Check existing tdx 2026.9.3 before campaign setup without reinstalling a correct runtime. Hand campaign creation and delivery to motion1-csv-list-campaign.
 ---
 
 # Motion 1 — Make your workshop email personal
 
 Use English for participant instructions, questions, previews, and completion messages. Keep technical settings backstage. Prepare the CSV and runtime check only; do not authenticate, query TD, create campaigns, or send emails here.
 
-## Collect everything in one interaction
+## Collect participant information with free-text questions
 
-Reuse all answers already supplied. Resolve the selected template's required personalization fields from the existing brief before asking. Use the `AskUserQuestion` tool to collect all missing information in one call (up to 4 questions per call), rather than displaying a text form or asking one question at a time.
+Reuse answers already supplied. Resolve the selected template's required personalization fields from the existing brief. Ask only for missing required values; omit unnecessary optional fields. There is no requirement to collect all fields together or in a single call.
 
-Call `AskUserQuestion` with the following questions for any missing required fields. Omit questions for fields already answered. Batch up to 4 questions in a single call:
+Use the AI Studio `AskUserQuestion` / Question interface when available. Free-text values are intentionally collected through its **Other** input; do not reject this interface merely because email addresses and names require free text, and do not replace a supported Question interaction with a text-message form.
 
-- **Email address** (header: "Email"): "What email address should I use for your participant profile?" — options: `["Send the workshop email to me after approval", "Skip — preview only"]`. If the participant wants to receive the email, they type their actual address using the "Other" input.
-- **First name** (header: "First Name"): "What is your first name?" — options: `["Enter my first name", "Use a fictional name for me"]`. Participant types their name via "Other".
-- **Last name** (header: "Last Name"): "What is your last name?" — options: `["Enter my last name", "Use a fictional name for me"]`. Participant types their name via "Other".
-- **Company name** (header: "Company"): "What is your company name?" — options: `["Enter my company name", "Leave company blank"]`. Participant types via "Other", or selects "Leave company blank" to omit.
-- **Delivery mode** (header: "Delivery"): "How would you like to receive the workshop email?" — options: `["Send after my final approval", "Preview only — no email sent"]`. Only ask this if delivery mode was not already determined from the email question.
+For each free-text question, show **Other only**, with no predefined answers. Use the tool's supported configuration: if Other is automatically supplied and an empty options list is valid, pass no predefined options; if Other must be explicit, supply only Other. Do not create placeholder choices such as "Enter my name", "Use a fictional name", "Skip", or "Preview only". Tell the participant: "Select Other and type your answer."
 
-Always note in the question preamble: "I will add 30 fictional profiles for the demonstration. In delivery mode, these use approved test recipients. Creating the CSV does not send any email."
+Follow the actual tool schema. Do not invent parameters, submit invalid calls, or require a tool by name when it is unavailable. If the interface cannot legally display Other alone, use an available native free-text Question field. If neither is supported, explain that limitation briefly and ask for the missing value in a short text question; do not claim the tool was used. This fallback is for an actual capability limitation, not a judgment that structured questions are unsuitable for free text.
 
-Treat selection of "Send after my final approval" or entry of a real email address as the participant's self-send opt-in. Include only personalization fields actually needed; mark optional fields as optional. Ask follow-up questions only for missing required values or ambiguities, grouping them in one `AskUserQuestion` call. Do not ask participants to choose types, merge-tag syntax, mappings, or CLI flags.
+Use these English prompts as needed:
+
+| Field | Header | Question |
+| --- | --- | --- |
+| `email` | Email | What email address should we send your workshop email to? Select Other and type your email address. |
+| `first_name` | First Name | What is your first name? Select Other and type your first name. |
+| `last_name` | Last Name | What is your last name? Select Other and type your last name. |
+| `company` | Company | What is your company name? Select Other and type your company name. |
+
+Collect company only when required by the selected template. Apply the same Other-only pattern to any other required personalization value. Ask follow-ups only to resolve missing required values or ambiguities. Do not ask participants to choose types, merge-tag syntax, mappings, CLI flags, delivery providers, or test-recipient settings.
+
+## Use the workshop send flow
+
+The workshop flow prepares the audience, creates and previews the email, and sends it through `motion1-csv-list-campaign`. Sending is the established outcome. Do not ask for a delivery mode, offer preview-only or skip-send options, or introduce a separate self-send opt-in question. Treat the participant's request for this workshop flow and their supplied recipient address as authorization for the requested self-send, within its stated scope. Do not interpret CSV-only requests as authorization to send.
+
+Keep participant-facing wording simple: "We'll use your details to personalize your workshop email and add 30 fictional profiles for the demonstration." Keep delivery infrastructure, SES, simulator addresses, quotas, and technical validation backstage. Do not ask marketers to approve or configure those details. This intake Skill prepares the CSV; the campaign Skill performs the actual send. Do not claim delivery until the campaign Skill confirms it.
 
 ## Reuse approved workshop settings
 
@@ -63,19 +74,17 @@ Use these as synthetic recipient values, never random addresses at real domains.
 
 Source: https://docs.aws.amazon.com/ses/latest/dg/send-an-email-from-console.html
 
-If the delivery provider is unknown, resolve it with the operator once. For a non-SES path, use explicitly approved operator-controlled test inboxes or aliases, with receive capability verified for this workflow. Do not invent a universally deliverable address. Never silently omit synthetic recipients or switch a requested live audience to preview mode.
-
-For preview-only mode, use unique `profile-001@example.test` through `profile-030@example.test` addresses; omit a real email if unnecessary and use a fictional address for the participant-shaped row. Mark the whole CSV preview-only and prevent it from being handed off as sendable.
+If the delivery provider is unknown, resolve it with the operator once. For a non-SES path, use explicitly approved operator-controlled test inboxes or aliases, with receive capability verified for this workflow. Do not invent a universally deliverable address. Never silently omit synthetic recipients or stop a requested send flow after preview.
 
 ### Validate and write
 
-Use UTF-8 and standard CSV quoting. Validate required values, email syntax, consistent field counts, unique email keys, required blanks, recipient classes, and row count. Preserve plus labels as part of each unique address. For the default live flow require exactly one opted-in participant address and 30 approved simulator/test addresses. Resolve failures rather than dropping rows.
+Use UTF-8 and standard CSV quoting. Validate required values, email syntax, consistent field counts, unique email keys, required blanks, recipient classes, and row count. Preserve plus labels as part of each unique address. For the default workshop send flow require exactly one authorized participant address and 30 approved simulator/test addresses. Resolve failures rather than dropping rows.
 
 Use existing approved key/blank policy and file/row/SQL limits. Downstream non-time fields are text; `time`, if present, is Unix seconds. Normally omit `time` so the helper can add ingest time. Do not promise unsupported numeric/date types, multiline cells, or large/batched processing.
 
 Save a new file in the approved Work Folder. Preserve original files. Use a unique filename rather than overwrite. If the user has requested CSV creation and the destination and data handling are already approved, that request authorizes saving; do not ask for redundant save approval. Resolve an unknown, unauthorized, or over-shared destination before writing real profiles.
 
-Show a masked summary: purpose, field names, data mode, participant/synthetic/total counts, new filename, destination, validation result, and whether recipients are sendable. Saving never authorizes delivery.
+Show a masked summary: purpose, field names, data mode, participant/synthetic/total counts, new filename, destination, validation result, and whether recipients are sendable. For CSV-only requests, saving does not authorize delivery. For the workshop send flow, carry the existing send instruction into the campaign handoff without asking for a delivery-mode selection.
 
 ## Handoff to campaign creation
 
@@ -86,7 +95,7 @@ Keep this handoff backstage and include no profile values or credentials:
 ```text
 CSV file: <approved absolute path>
 Collection/retention/destination approval: confirmed
-Workshop self-send opt-in: confirmed
+Workshop send instruction: confirmed | CSV-only (no send requested)
 Columns/types: <names and types only>
 Rows: <total>; participant: <count>; synthetic: <count>
 Sendable: yes
@@ -98,13 +107,12 @@ Validation: passed | blocked <aggregate counts and reasons>
 Next: motion1-csv-list-campaign
 ```
 
-When asked to continue, invoke `motion1-csv-list-campaign` with the saved path and existing answers. If unavailable, provide a follow-up prompt. The campaign Skill must revalidate the saved file and reuse the verified runner. Do not claim the campaign Skill was updated by creating this Skill. If it enforces a conflicting one-recipient-only rule, report the conflict to the operator before campaign creation; do not silently shrink the audience or override it.
+For the workshop send flow, invoke `motion1-csv-list-campaign` with the saved path and existing answers as the next step without asking whether to continue. For CSV-only requests, invoke it only when the user requests continuation. If unavailable, provide a follow-up prompt. The campaign Skill must revalidate the saved file and reuse the verified runner. Do not claim the campaign Skill was updated by creating this Skill. If it enforces a conflicting one-recipient-only rule, report the conflict to the operator before campaign creation; do not silently shrink the audience or override it.
 
-Require a separate final delivery approval in the campaign Skill, showing the actual recipient composition, for example "1 participant + 30 SES simulator recipients = 31 total." Preview-only recipients must never be sent. No send approval is requested or exercised here.
+For the workshop send flow, continue through campaign creation, preview, and sending using the existing send instruction; do not add a delivery-mode question or redundant approval request. Honor any applicable mandatory approval in the campaign Skill, but keep participant-facing wording focused on the personalized email. Keep the full test-recipient composition in the internal handoff. Never hand off non-sendable recipients as sendable. No email is sent by this intake Skill itself.
 
 ## Examples
 
-- "Create a workshop email with my name and send it to me after I approve." Use AskUserQuestion to collect all missing fields in one call; generate 1 participant plus 30 SES simulator profiles when SES is confirmed; check installed tdx only when continuing; save a new approved CSV; hand off for preview and final send approval.
-- "Here are my email, first name, and last name; create the CSV." Reuse supplied values, ask only for genuinely missing required information via AskUserQuestion, and save without repeating an already authorized save step.
-- "Try fictional profiles without sending." Generate preview-only `example.test` profiles; omit unnecessary real data; save the CSV; skip the version check unless continuing to campaign operations.
+- "Create a workshop email with my name and send it to me." Reuse supplied values; collect missing personalization through Other-only Question inputs; generate 1 participant plus 30 approved test profiles; verify installed tdx when continuing; save a new approved CSV; hand off for creation, preview, and sending. Do not ask for delivery mode or explain delivery infrastructure to the participant.
+- "Here are my email, first name, and last name; create the CSV." Reuse supplied values, ask only for missing required fields, and save without repeating an already authorized save step. Stop after CSV preparation when that is the requested scope.
 - "tdx reports 2026.9.3." Verify in the actual campaign runtime unless this session already has a successful check for that same runtime; reuse the installed runner without package preparation.
