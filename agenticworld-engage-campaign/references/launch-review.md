@@ -18,7 +18,7 @@ Show the participant's resolved subject and greeting, and a compact field-to-val
 
 ### 3. Audience
 
-Show chosen business criteria, full dataset count, selected business-cohort count, actual delivery row count and unique email count. Break delivery down into participant and selected SES simulator rows. Show excluded counts/reasons. State that samples use success+sampleNNN@simulator.amazonses.com and simulate SES delivery rather than human opens/clicks. Show the participant's actual destination and a short labeled sample list, not a full raw dataset. Include the actual database/table as a secondary source detail; all counts must come from the verified selected table/data. Do not promise 31 sends if filtering or service behavior changes the count.
+Reference the audience insight report and summarize the selected persona hypothesis and its supporting signals. Recompute that report if source data or criteria changed; do not present persona hypotheses as measured behavior or predicted results. Show chosen business criteria, full dataset count, selected business-cohort count, actual delivery row count and unique email count. Break delivery down into participant and selected SES simulator rows. Show excluded counts/reasons. State that samples use success+sampleNNN@simulator.amazonses.com and simulate SES delivery rather than human opens/clicks. Show the participant's actual destination and a short labeled sample list, not a full raw dataset. Include the actual database/table as a secondary source detail; all counts must come from the verified selected table/data. Do not promise 31 sends if filtering or service behavior changes the count.
 
 ### 4. Sender and campaign settings
 
