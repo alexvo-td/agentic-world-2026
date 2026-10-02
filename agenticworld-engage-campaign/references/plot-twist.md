@@ -21,7 +21,7 @@ Select business customers, then include the explicitly supplied QA address indep
 
 ## Added-list impact report
 
-Use analyze_added_audience.py for all-overdue/higher-risk criteria with the verified original selected snapshot as optional --baseline. Supply --ses-verified and approved-address flags only after actual host/provider verification. Other criteria need a verified evaluator. The helper parses finite numbers, reports exclusions, compares exact normalized emails with plus labels preserved, and produces selected-business and workshop-delivery CSVs plus impact JSON. It does not import, merge campaigns, verify readiness or send.
+Use analyze_added_audience.py for all-overdue/higher-risk criteria with the verified original selected snapshot as optional --baseline. Supply --ses-verified and approved-address flags only after actual host/provider verification. Other criteria need a verified evaluator. The helper parses finite numbers, reports exclusions, compares exact normalized emails with plus labels preserved, and produces selected-business and workshop-delivery CSVs plus impact JSON. `business_delivery_rows` includes a participant address that also qualifies as an additional business destination; `delivery_rows` counts unique send destinations, so disclose the overlap rather than summing business and QA counts. It does not import, merge campaigns, verify readiness or send.
 
 Present a compact report in this order:
 

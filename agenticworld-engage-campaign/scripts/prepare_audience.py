@@ -25,10 +25,12 @@ def main():
  if not re.fullmatch(r'[^\s@,<>]+@[^\s@,<>]+\.[^\s@,<>]+',email):p.error('Provide a valid participant email')
  if re.fullmatch(r'success(?:\+[A-Za-z0-9_-]+)?@simulator\.amazonses\.com',email,re.I):p.error('Participant must supply their own email, not the shared simulator address')
  if not a.first_name.strip() or not a.last_name.strip():p.error('Both names are required')
+ path=Path(a.csv)
  if a.participant_role=='workshop_self_test':
   if not a.self_test_output:p.error('QA role requires a separate --self-test-output CSV')
-  if Path(a.self_test_output).resolve()==Path(a.csv).resolve():p.error('QA CSV must be separate from the business source')
- path=Path(a.csv);rng=random.Random(a.seed);rows=[];fields=FIELDS[:]
+  if not path.is_file():p.error('Business source CSV must exist before creating a separate self-test CSV')
+  if Path(a.self_test_output).resolve()==path.resolve():p.error('QA CSV must be separate from the business source')
+ rng=random.Random(a.seed);rows=[];fields=FIELDS[:]
  if path.exists():
   with path.open(encoding='utf-8-sig',newline='') as f:
    reader=csv.DictReader(f)
@@ -52,7 +54,7 @@ def main():
  matches=[r for r in rows if r.get('email_address','').strip().casefold()==email.casefold()]
  if len(matches)>1:p.error('Duplicate participant emails in existing CSV; reconcile before updating')
  if a.participant_role=='workshop_self_test':
-  if matches and any(r.get('email_consent_status','')=='DENIED' for r in matches):p.error('Existing DENIED consent must be resolved explicitly; QA cannot bypass it')
+  if matches and any((r.get('email_consent_status') or '').strip().casefold()=='denied' for r in matches):p.error('Existing DENIED consent must be resolved explicitly; QA cannot bypass it')
   # Identity-only QA artifact: do not invent purchase/churn signals or modify
   # a matching business customer to satisfy audience eligibility.
   qa=dict.fromkeys(fields,'');digest=hashlib.sha256(email.casefold().encode()).hexdigest()[:16]

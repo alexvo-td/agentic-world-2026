@@ -67,19 +67,81 @@ def median(rows, field, **kwargs):
     return {'value': statistics.median(values) if values else None, 'known': len(values), 'total': len(rows)}
 
 
-def write_csv(path, fields, rows):
+def stage_output(path, prefix, newline, write):
     path = Path(path)
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ValueError(f'Output must be a regular file: {path}')
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temp = tempfile.mkstemp(dir=path.parent, prefix='.selection-', suffix='.csv')
+    fd, temp = tempfile.mkstemp(dir=path.parent, prefix=prefix, suffix=path.suffix)
     try:
-        with os.fdopen(fd, 'w', encoding='utf-8', newline='') as stream:
-            writer = csv.DictWriter(stream, fieldnames=fields)
-            writer.writeheader()
-            writer.writerows(rows)
-        os.replace(temp, path)
-    finally:
+        with os.fdopen(fd, 'w', encoding='utf-8', newline=newline) as stream:
+            write(stream)
+        return Path(temp)
+    except Exception:
         if os.path.exists(temp):
             os.unlink(temp)
+        raise
+
+
+def stage_csv(path, fields, rows):
+    def write(stream):
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    return stage_output(path, '.selection-', '', write)
+
+
+def stage_json(path, report):
+    def write(stream):
+        json.dump(report, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+
+    return stage_output(path, '.analysis-', None, write)
+
+
+def publish_outputs(outputs):
+    staged = []
+    backups = []
+    installed = []
+    committed = False
+    rollback_failed = False
+    try:
+        for path, build in outputs:
+            staged.append((Path(path), build()))
+        for path, _ in staged:
+            if path.exists():
+                fd, backup = tempfile.mkstemp(dir=path.parent, prefix='.backup-', suffix=path.suffix)
+                os.close(fd)
+                os.unlink(backup)
+                backups.append((path, Path(backup)))
+                os.replace(path, backup)
+        for path, temp in staged:
+            os.replace(temp, path)
+            installed.append(path)
+        committed = True
+    except Exception:
+        for path in reversed(installed):
+            try:
+                if path.exists():
+                    path.unlink()
+            except OSError:
+                rollback_failed = True
+        for path, backup in reversed(backups):
+            try:
+                if backup.exists():
+                    os.replace(backup, path)
+            except OSError:
+                rollback_failed = True
+        raise
+    finally:
+        for _, temp in staged:
+            if temp.exists():
+                temp.unlink()
+        if committed or not rollback_failed:
+            for _, backup in backups:
+                if backup.exists():
+                    backup.unlink()
 
 
 def main():
@@ -141,12 +203,13 @@ def main():
             raise ValueError('Participant must supply their own valid email')
         if len(qa_rows) != 1 or qa_rows[0]['email_address'].strip().casefold() != participant or qa_rows[0].get('record_role') != 'workshop_self_test' or qa_rows[0].get('email_consent_status') != 'GRANTED':
             raise ValueError('Require exactly one explicitly authorized participant QA record')
-        if any(r['email_address'].strip().casefold() == participant and r.get('email_consent_status') == 'DENIED' for r in rows):
+        if any(r['email_address'].strip().casefold() == participant and (r.get('email_consent_status') or '').strip().casefold() == 'denied' for r in rows):
             raise ValueError('QA cannot bypass existing DENIED consent')
         # A destination is sent only once; preserve the business artifact and
         # disclose the participant/business collision separately in the report.
         qa_overlap = sum(r['email_address'].strip().casefold() == participant for r in business_delivery)
         business_delivery = [r for r in business_delivery if r['email_address'].strip().casefold() != participant]
+        business_delivery_count = len(business_delivery) + qa_overlap
         all_fields = list(dict.fromkeys(fields + qa_fields + ['record_role']))
         deliver_rows = [{**r, 'record_role': 'business_customer'} for r in business_delivery] + qa_rows
         report = {
@@ -159,30 +222,22 @@ def main():
             'cohort_exclusions': dict(exclusions), 'overlap_with_original': overlap,
             'additional_business_profiles': len(selected) - overlap if overlap is not None else None,
             'overlap_method': 'exact normalized email; plus labels preserved' if baseline is not None else 'unavailable',
-            'business_delivery_rows': len(business_delivery), 'qa_delivery_rows': 1,
+            'business_delivery_rows': business_delivery_count, 'qa_delivery_rows': 1,
             'delivery_rows': len(deliver_rows), 'participant_business_overlap': qa_overlap,
             'participant_business_cohort_overlap': participant in cohort_keys,
             'delivery_exclusions': dict(delivery_exclusions),
             'days_since_purchase': median(selected, 'days_since_last_purchase'),
             'churn_score': median(selected, 'propensity_to_churn', score=True),
             'business_audience_empty': not selected,
-            'business_delivery_empty': not business_delivery,
+            'business_delivery_empty': business_delivery_count == 0,
             'status': 'locally_prepared_not_imported_or_launch_ready',
         }
-        # Finish validation before publishing any selection output.
-        write_csv(args.selected_output, fields, selected)
-        write_csv(args.delivery_output, all_fields, deliver_rows)
-        path = Path(args.report_output)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        fd, temp = tempfile.mkstemp(dir=path.parent, prefix='.analysis-', suffix='.json')
-        try:
-            with os.fdopen(fd, 'w', encoding='utf-8') as stream:
-                json.dump(report, stream, indent=2, allow_nan=False)
-                stream.write('\n')
-            os.replace(temp, path)
-        finally:
-            if os.path.exists(temp):
-                os.unlink(temp)
+        # Stage every result before publishing any of them.
+        publish_outputs([
+            (args.selected_output, lambda: stage_csv(args.selected_output, fields, selected)),
+            (args.delivery_output, lambda: stage_csv(args.delivery_output, all_fields, deliver_rows)),
+            (args.report_output, lambda: stage_json(args.report_output, report)),
+        ])
         print(json.dumps(report, allow_nan=False))
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
