@@ -14,7 +14,7 @@
 - Participant changes offer: update subject, hero and every product discount consistently, validate, show updated preview.
 - Real customer import with denied consent: preserve denied status and exclude; never apply fictional self-send defaults to real customers.
 
-- Workspace/sender/campaign configuration is unknown: say “I'm checking the Engage workspace and sender settings.” and execute documented direct `tdx` discovery immediately. Do not ask whether read-only commands may run.
+- Workspace/sender configuration is unknown: complete initial intake and local audience work first. At service preparation, use exact supplied config or needed workspace/sender discovery automatically. Do not search old campaign folders/state to obtain settings, or ask read-only command permission.
 - Referenced instructions show npx commands or a read-only approval prompt: translate commands to direct `tdx`, omit that prompt, and continue discovery.
 
 - “Use your recommendations for everything”: adopt the recommended audience and copy without further business questions; explain selections and show the preview, retaining final Launch.
@@ -31,7 +31,7 @@
 
 - Two message directions are proposed: show short subject/opening previews, use the structured choice tool with Home refresh (Recommended) and Welcome back, then apply the selected direction without a separate technical approval.
 
-- “Run tdx delivery senders --output json and tdx engage campaign push --help?”: do not ask this question. Execute supported discovery/help commands immediately, inspect results, then continue.
+- “Run tdx delivery senders --output json and tdx engage campaign push --help?”: do not ask this question. At the service stage, execute needed supported discovery/help, inspect results and continue; this does not require startup discovery.
 - Draft push prompts interactively: inspect its dry-run and apply with documented --yes under existing preparation authorization. Live launch --yes remains gated by the explicit participant Launch action.
 
 - CSV import: generate a private escaped INSERT SQL file, execute it through tdx query, reconcile job status and verify actual table rows before campaign creation. An uncertain result must not trigger a blind repeated INSERT.
@@ -68,3 +68,8 @@
 - Participant QA email matches an eligible business destination: send once, retain business evidence, disclose QA overlap and exclude QA from persona aggregates.
 - Request includes performance review: generate real/interim metrics without asking whether to show them; refresh remains query-only.
 - Completion: save journey-handoff.md and propose a repeatable workflow; do not create a journey/recurring send or claim revenue growth.
+
+- New invocation while general/previous-run folders exist: ignore them. First introduce the task and ask missing identity in one ordinary message; do not ls/find/glob folders, read old CSV/state or announce a prior campaign.
+- Complete identity supplied at invocation: allocate a new run and prepare the new dataset with the documented helper; no folder/history scan, git pull, test reading or helper-source review first.
+- No handoff or audience CSV supplied: create fresh fictional business samples and separate QA. Show original overlap unavailable and guide current-data choices; absence is not a technical blocker.
+- Explicit refresh for this run: use its exact already-known state/IDs, query afresh and do not start a new campaign. Explicit prior reuse: read only the named target, never scan for latest/matching runs.

@@ -1,6 +1,6 @@
 # Verified service bindings
 
-Read this before launch readiness checks, status polling or performance queries. The host configuration may provide the bindings below; these are skill configuration fields, not an assertion that an API exposes them. Null placeholders are unresolved prerequisites. Confirm each binding against installed help, an authoritative service contract or a current host runbook. Record its source/version and observation time privately; do not invent endpoints, response paths or status names.
+Read this at the launch-readiness/status/reporting stage, not on invocation. Initial intake and local preparation do not depend on loading these bindings. The host configuration may provide the bindings below; these are skill configuration fields, not an assertion that an API exposes them. Null placeholders are unresolved prerequisites. Confirm each binding against installed help, an authoritative service contract or a current host runbook. Record its source/version and observation time privately; do not invent endpoints, response paths or status names.
 
 ## Validation evidence
 
