@@ -1,6 +1,7 @@
 # Conversation and recovery examples
 
-- Start: “Help me create my Northstar win-back campaign. Add me to the audience.” Ask email/first/last together; generate remaining fictional fields; guide audience choice and then message choice before automatic campaign configuration and preview.
+- Plot-twist start: “Use our selected strategy with the new conference list. Add my email for delivery confirmation and show performance after launch.” Reuse the verified discovery handoff, collect missing identity together, prepare independent QA and show the added-list impact before any unresolved copy choice. Do not repeat settled audience choices.
+- Explicit standalone win-back: guide the full audience/message comparison and use the fictional business-profile exercise when requested.
 - All identity present: “I'm Alex Lee, alex@my-controlled-domain.test. Prepare my workshop email.” Reuse values; no intake question. Address syntax is not proof of delivery; this example is illustrative.
 - Partial identity: email and first name supplied; ask only last name. Invalid email: request corrected email only.
 - New preparation request with the same email: preserve the identity and source data as appropriate, but create a fresh run audience snapshot/recipient table and campaign. Within that run, upsert the participant once. Never reuse an old draft merely because the email matches.
@@ -18,7 +19,7 @@
 
 - “Use your recommendations for everything”: adopt the recommended audience and copy without further business questions; explain selections and show the preview, retaining final Launch.
 - Initial prompt specifies high-churn audience and welcoming copy: reuse both choices and skip redundant questions.
-- A participant chooses a cohort that excludes their fictional profile: explain the mismatch and offer a relevant business choice; do not silently override it.
+- Standalone fictional business participant falls outside a selected cohort: explain the mismatch without overriding attributes. Plot-twist confirmation uses independent QA instead; preserve business targeting.
 
 - Reusable profile CSV has email_address but TD recipient table needs email: transform the campaign import into a physical email column automatically, preserve the reusable CSV, verify the table schema, and use sql_name: email. Never substitute sql_name: email_address.
 
@@ -41,7 +42,7 @@
 
 - Sender listing returns an unknown-command error from the Engage namespace: use tdx delivery senders; do not repeat the unsupported command or infer that sender discovery is unavailable. Verify supported flags automatically without a permission question.
 
-- Observed delivery completes: offer Show report / Not now once using the business-choice tool. A requested report reads the workspace-domain events table and shows the defined message-level KPIs.
+- Observed send processing completes, including partial failure: offer Show report / Not now once using the business-choice tool. A requested report reads the workspace-domain events table and shows the defined message-level KPIs.
 - “Refresh the report”: execute a fresh events query for the current campaign and resolved scope, update generation time and successful metrics, and do not create or resend anything.
 - Missing test_mode column: follow the documented legacy-schema decision in performance-report.md; never pretend test exclusion succeeded or alter delivery logs.
 - Refresh query fails: show failed refresh with the last successful report marked stale; do not replace its numbers with zero.
@@ -51,4 +52,19 @@
 - Imported data lacks churn scores: show broader overdue insights where evaluable, mark higher-risk analysis unavailable and do not impute scores or invent a higher-risk persona/count.
 - High-risk cohort is empty: show zero and no supported persona; offer the nonempty broader strategy rather than fabricating differences.
 - Cohort aggregates are similar: state the observed similarity; do not invent different demographics, styles or discount sensitivity to distinguish personas.
-- “Refresh the audience report”: reread the current source, recompute aggregates and regenerate insights. Do not change targeting or send; if a prelaunch selected cohort changes, regenerate its selection/delivery artifacts and launch review before launch. After launch, retain the sent snapshot and label analysis of newer data separately.
+- “Refresh the audience report”: reread the current source, recompute aggregates and regenerate insights. Do not change targeting or send; if a prelaunch selected cohort changes, mark its launch review stale and invalidate approval. Apply updated targeting only on explicit or already-delegated audience-update authorization, then synchronize artifacts, a new run-owned recipient table and the saved draft before a new launch review. After launch, retain the sent snapshot and label analysis of newer data separately.
+
+- Plot-twist participant outside business criteria: include the explicitly authorized identity-only QA address independently; do not change business data. Genuine DENIED or an empty actual business delivery audience blocks business activation. Standalone business-profile mode retains its own eligibility checks.
+- Standalone selected audience contains only the participant: label that actual selection and omit the sample preview. Plot-twist has no eligible business recipients: show a QA-only draft, not a customer activation.
+- Existing verified workshop CSV has fewer than 30 sample IDs: replenish missing IDs with --workshop-data, preserve existing rows/overrides and verify rerun stability. Real/mixed/unknown-provenance CSV: omit the flag and do not replenish fictional samples.
+- Local validate passes but service readiness/status contract is unresolved: retain the draft and report the precise host prerequisite; do not label Ready or fabricate completion.
+- Previewed recipient table changes before approval is executed: read-back fingerprint mismatch invalidates approval; no launch until a new review is presented and approved.
+- Two refresh jobs finish in reverse order: only the latest request may publish success or failure; keep the previous successful report stale while waiting.
+- Reporting workspace-domain mapping changes after launch: preserve the launch-time source and period; do not silently redirect the report.
+
+- Original selected audience/copy supplied: inherit both and show only conference-list impact/justified changes; do not repeat Customer Discovery.
+- New list contains prospects with no history: show the win-back mismatch; do not create synthetic history or consent for imported prospects.
+- Original audience unavailable: show overlap/net-new unavailable, never zero or deduplicated. Already-sent original with unresolved duplicate risk blocks customer activation.
+- Participant QA email matches an eligible business destination: send once, retain business evidence, disclose QA overlap and exclude QA from persona aggregates.
+- Request includes performance review: generate real/interim metrics without asking whether to show them; refresh remains query-only.
+- Completion: save journey-handoff.md and propose a repeatable workflow; do not create a journey/recurring send or claim revenue growth.
