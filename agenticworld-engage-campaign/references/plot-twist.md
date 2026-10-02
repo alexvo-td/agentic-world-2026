@@ -4,9 +4,9 @@
 
 Default this workshop stage to a conference list of existing Northstar customers with renewed contact. Purchase/consent signals come from the fictional fixture or verified source, not conference attendance. New prospects require acquisition eligibility and copy; never invent purchase history or consent to make them overdue.
 
-Read a current-workfolder/host Customer Discovery handoff with goal, selected criteria, selected-cohort snapshot/reference/hash, observed persona evidence, offer, template/copy, workspace and optional existing draft ID/status. Verify source/campaign ownership in the authenticated account. Record evidence and decision versions. Missing technical bindings go to the host; ask participants only for unresolved business intent. Never infer decisions from another participant's folder or a similarly named campaign. Recap: “I'll keep your selected strategy and offer, inspect the new conference list, and add your address for delivery confirmation.”
+Read a Customer Discovery handoff only when its exact path/content was explicitly supplied in this invocation; never discover it in current/general/previous folders. If absent, start the fresh fictional workshop, recommend a strategy from its newly generated data and mark original overlap unavailable. When supplied, the handoff should contain goal, selected criteria, selected-cohort snapshot/reference/hash, observed persona evidence, offer, template/copy, workspace and optional existing draft ID/status. Verify source/campaign ownership in the authenticated account. Record evidence and decision versions. Missing technical bindings go to the host; ask participants only for unresolved business intent. Never infer decisions from another participant's folder or a similarly named campaign. For a supplied handoff, recap its choices. Without one, introduce a fresh conference-list campaign and ask missing identity first.
 
-Persist plot_twist mode for this stage; use standalone win-back only when explicitly requested or no discovery exists, explaining the fresh start. A CSV-only task stays CSV-only.
+Persist plot_twist mode for this new isolated session; use standalone win-back only when explicitly requested. Do not probe for discovery/history when no handoff was supplied. A CSV-only task stays CSV-only.
 
 ## Operation scope
 

@@ -20,16 +20,18 @@ def profile(index,rng,participant=False):
   for n in (30,90,120):row[f'purchased_in_last_{n}_days']='N'
  return row
 def main():
- p=argparse.ArgumentParser();p.add_argument('--csv',required=True);p.add_argument('--email',required=True);p.add_argument('--first-name',required=True);p.add_argument('--last-name',required=True);p.add_argument('--seed',type=int,default=2026);p.add_argument('--workshop-data',action='store_true',help='Confirm existing CSV provenance permits fictional sample replenishment');p.add_argument('--participant-role',choices=['business_customer','workshop_self_test'],default='business_customer');p.add_argument('--self-test-output');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--csv',required=True);p.add_argument('--email',required=True);p.add_argument('--first-name',required=True);p.add_argument('--last-name',required=True);p.add_argument('--seed',type=int,default=2026);p.add_argument('--new-workshop-data',action='store_true',help='Explicitly create a new fictional workshop dataset');p.add_argument('--workshop-data',action='store_true',help='Confirm existing CSV provenance permits fictional sample replenishment');p.add_argument('--participant-role',choices=['business_customer','workshop_self_test'],default='business_customer');p.add_argument('--self-test-output');a=p.parse_args()
  email=a.email.strip()
  if not re.fullmatch(r'[^\s@,<>]+@[^\s@,<>]+\.[^\s@,<>]+',email):p.error('Provide a valid participant email')
  if re.fullmatch(r'success(?:\+[A-Za-z0-9_-]+)?@simulator\.amazonses\.com',email,re.I):p.error('Participant must supply their own email, not the shared simulator address')
  if not a.first_name.strip() or not a.last_name.strip():p.error('Both names are required')
- path=Path(a.csv)
  if a.participant_role=='workshop_self_test':
   if not a.self_test_output:p.error('QA role requires a separate --self-test-output CSV')
-  if not path.is_file():p.error('Business source CSV must exist before creating a separate self-test CSV')
-  if Path(a.self_test_output).resolve()==path.resolve():p.error('QA CSV must be separate from the business source')
+  if Path(a.self_test_output).resolve()==Path(a.csv).resolve():p.error('QA CSV must be separate from the business source')
+ path=Path(a.csv)
+ if a.new_workshop_data and a.workshop_data:p.error('Choose new fixture creation or existing workshop-data replenishment, not both')
+ if path.exists() and a.new_workshop_data:p.error('Use --new-workshop-data only when the business CSV does not exist')
+ if not path.exists() and not a.new_workshop_data:p.error('Business CSV does not exist; use --new-workshop-data only for an intentional fresh fixture')
  rng=random.Random(a.seed);rows=[];fields=FIELDS[:]
  if path.exists():
   with path.open(encoding='utf-8-sig',newline='') as f:

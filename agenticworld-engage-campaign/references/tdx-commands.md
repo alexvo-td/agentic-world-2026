@@ -1,7 +1,7 @@
 # tdx command reference
 
 Source: https://tdx.treasuredata.com/commands/engage.html#campaigns
-Checked: 2026-10-01. Confirm installed help automatically before using unsupported flags.
+Checked: 2026-10-01. At the service stage, confirm installed help before using unsupported flags. Do not preload help/version/discovery at invocation; do not list campaigns to reconstruct previous sessions.
 
 Use an explicit workspace. Regular campaigns are the default; select ListCampaign explicitly.
 

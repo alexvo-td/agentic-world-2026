@@ -1,5 +1,9 @@
 # Technical execution and recovery
 
+## Session isolation and startup
+
+SKILL.md Fresh-session start controls sequencing: intake and local audience preparation precede runtime/service discovery. All reads in this reference are stage-specific authorization, not an instruction to preload discovery on invocation. Use only current-invocation explicit inputs, exact session host bindings and current-run artifacts. Do not scan current/shared/general directories, list old campaigns, read another run's state/CSV or update the skill repository to reconstruct setup. Missing handoff/config is not evidence that another folder should be searched. Host preflight happens before the participant session.
+
 ## Host prerequisites
 
 Use host-provided TAIS shared-workfolder capabilities, participant workfolder context, authenticated TD region/account, an Engage workspace and verified sender. Host configuration must supply collection URL and optionally test inboxes/product catalog IDs. Resolve verified readiness/status/reporting bindings under service-bindings.md; placeholders in service_bindings are not usable configuration. The bundled JSON contains null placeholders intentionally. Do not expose secrets in chat, CSVs, process logs or readiness state.
@@ -23,25 +27,24 @@ Run all version, help, authentication, audience, campaign, validation, launch an
 
 ## Cross-namespace read authorization
 
-Read-only `tdx` discovery is authorized across all namespaces needed for the workshop, including delivery sender commands. `--help` is a local inspection, not a business approval point. Run the reported discovery immediately when supported:
+Read-only `tdx` discovery is authorized across all namespaces needed for the workshop, including delivery sender commands. `--help` is a local inspection, not a business approval point. At service preparation, run the needed discovery when supported; do not run it as startup work:
 
 ```bash
 tdx delivery senders --output json
 tdx engage campaign push --help
 ```
 
-Use `tdx delivery senders` for sender listing. Never infer that sender listing belongs to the Engage namespace. Do not append `--workspace` to delivery commands unless their installed help explicitly supports it; verify workspace association separately from actual workspace configuration/readiness. Check `tdx delivery --help` or the relevant command help automatically if sender syntax is uncertain. Do not print a permission question or invoke a choice tool for these commands. The supplied Engage reference does not establish delivery sender flags; use installed help to verify them. Do not extend discovery permission into unrelated destructive commands.
+Use `tdx delivery senders` for sender listing. Never infer that sender listing belongs to the Engage namespace. Do not append `--workspace` to delivery commands unless their installed help explicitly supports it; verify workspace association separately from actual workspace configuration/readiness. Check `tdx delivery --help` or the relevant command help automatically if sender syntax is uncertain. Run these only when service preparation needs them; do not delay identity intake or local audience analysis for discovery. Do not print a permission question or invoke a choice tool for these commands. The supplied Engage reference does not establish delivery sender flags; use installed help to verify them. Do not extend discovery permission into unrelated destructive commands.
 
 ## Read-only discovery without conversational approval
 
-The campaign-preparation request authorizes the reads needed to prepare it. Execute workspace, sender and campaign listing/details, CLI help/version, authenticated configuration reads and status checks immediately. Do not ask for permission because a command accesses a service, because configuration is unknown, or because the operation is read-only. Unknown configuration is a reason to inspect it, not a reason to request approval.
+The campaign-preparation request authorizes the reads needed to prepare it. At the relevant service stage, execute needed workspace/sender/template discovery, CLI checks and exact current-run/explicitly-targeted campaign reads automatically. Do not list campaigns to locate previous sessions, and do not run this discovery before the initial intake/local audience work. Do not ask for permission because a command accesses a service, because configuration is unknown, or because the operation is read-only. Unknown configuration is a reason to inspect it, not a reason to request approval.
 
-For the reported discovery sequence, use the following direct commands when their syntax is supported by installed CLI help:
+At the service-operation stage, use these direct discovery commands only when explicit session configuration cannot resolve the needed workspace/sender and installed help supports their syntax:
 
 ```bash
 tdx engage workspaces --output json
 tdx delivery senders
-tdx engage campaigns
 ```
 
 Inspect help automatically and adjust arguments if the installed CLI requires them. Do not print these commands as a proposed action awaiting approval. Participant-facing progress example: “I'm checking the Engage workspace and sender settings.” Then execute and continue preparation.
@@ -62,7 +65,7 @@ For every new campaign-preparation request, allocate a unique run ID and create 
 
 Create an immutable per-run audience snapshot/import artifact and unique recipient-table name (for example an identifier-safe participant slug plus UTC timestamp and random suffix). Use a unique campaign name suffix when no exact name was requested. Preserve an explicitly requested name when duplicate names are supported; if uniqueness prevents it, explain the collision and ask for a business naming choice. Never overwrite an old campaign/table to avoid a collision. Do not modify or delete prior runs. Reuse source template, workspace, sender and explicitly supplied identity as inputs; copy the reusable profile dataset into a new run snapshot rather than sharing mutable campaign audience state.
 
-Continuing a conversation, correcting copy, changing a choice, polling status or retrying a failed command belongs to the same run unless the participant requests a new campaign. Load that run's state and fetch its object status before retrying an ambiguous mutation. Reconcile only objects created by that run, so retries cannot create duplicates. After a successful or uncertain launch, never automatically resend or create a replacement; report pending state and poll boundedly. A separate explicit new-campaign request creates fresh objects but still requires its own preview and Launch action.
+Explicit continuation, copy/choice revision, launch, status polling or technical retry for the current run may use its already-known exact state path. A new skill invocation starts a fresh run unless continuation/reuse is explicit; never load state by searching previous folders. Load that current/explicitly-targeted run's state and fetch its object status before retrying an ambiguous mutation. Reconcile only objects created by that run, so retries cannot create duplicates. After a successful or uncertain launch, never automatically resend or create a replacement; report pending state and poll boundedly. A separate explicit new-campaign request creates fresh objects but still requires its own preview and Launch action.
 
 ## Launch gates
 

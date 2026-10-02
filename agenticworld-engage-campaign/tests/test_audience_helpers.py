@@ -59,7 +59,7 @@ class AudienceHelperTests(unittest.TestCase):
             }],
         )
 
-    def run_prepare(self, source, qa):
+    def run_prepare(self, source, qa, extra=()):
         return subprocess.run(
             [
                 sys.executable,
@@ -70,6 +70,7 @@ class AudienceHelperTests(unittest.TestCase):
                 "--last-name", "Lee",
                 "--participant-role", "workshop_self_test",
                 "--self-test-output", str(qa),
+                *extra,
             ],
             capture_output=True,
             text=True,
@@ -93,13 +94,28 @@ class AudienceHelperTests(unittest.TestCase):
             text=True,
         )
 
-    def test_self_test_requires_an_existing_business_source(self):
-        missing = self.directory / "missing-business.csv"
+    def test_new_fixture_creation_requires_explicit_flag(self):
+        missing = self.directory / "new-business.csv"
         result = self.run_prepare(missing, self.qa)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Business source CSV must exist", result.stderr)
+        self.assertIn("use --new-workshop-data", result.stderr)
         self.assertFalse(missing.exists())
         self.assertFalse(self.qa.exists())
+
+        result = self.run_prepare(missing, self.qa, ("--new-workshop-data",))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads(result.stdout)
+        self.assertEqual(summary["profiles"], 30)
+        self.assertEqual(summary["participant_rows"], 0)
+        self.assertEqual(summary["qa_rows"], 1)
+        with missing.open(encoding="utf-8", newline="") as stream:
+            business = list(csv.DictReader(stream))
+        with self.qa.open(encoding="utf-8", newline="") as stream:
+            qa = list(csv.DictReader(stream))
+        self.assertEqual(len(business), 30)
+        self.assertEqual(len(qa), 1)
+        self.assertEqual(qa[0]["record_role"], "workshop_self_test")
+        self.assertEqual(qa[0]["days_since_last_purchase"], "")
 
     def test_prepare_rejects_case_or_whitespace_variants_of_denied_consent(self):
         for consent in ("denied", " DENIED "):

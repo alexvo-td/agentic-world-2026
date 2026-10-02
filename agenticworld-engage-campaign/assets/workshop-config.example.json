@@ -26,5 +26,8 @@
   "discovery_handoff_path": null,
   "original_selected_cohort_path": null,
   "operation_scope": "additional_list_one_off",
-  "reporting_requested": true
+  "reporting_requested": true,
+  "session_policy": "fresh_invocation",
+  "startup_discovery": false,
+  "history_search": false
 }

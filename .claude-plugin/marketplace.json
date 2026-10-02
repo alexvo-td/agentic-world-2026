@@ -47,7 +47,7 @@
     },
     {
       "name": "agenticworld-engage-campaign",
-      "description": "Use for the Agentic World Northstar Engage workshop, especially the conference-list Plot-twist stage: inherit Customer Discovery decisions, assess an added list, prepare a separate participant confirmation recipient, review and launch an approved personalized email, and inspect live performance. Also supports standalone win-back preparation and CSV-only requests; keep business targeting separate from workshop self-test delivery.",
+      "description": "Use for the Agentic World Northstar Engage workshop, especially the conference-list Plot-twist stage: start a fresh isolated session, use only explicitly supplied Customer Discovery decisions, assess the list, prepare a separate participant confirmation recipient, review and launch an approved personalized email, and inspect live performance. Also supports standalone win-back and CSV-only requests; keep business targeting separate from workshop self-test delivery.",
       "source": "./",
       "strict": false,
       "skills": [
