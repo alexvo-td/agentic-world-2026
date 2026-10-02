@@ -14,5 +14,17 @@
   "minimum_runtime_version": "2026.9.3",
   "sample_recipient_address": "success@simulator.amazonses.com",
   "sample_delivery_provider": "amazon_ses",
-  "sample_recipient_pattern": "success+sample{index:03d}@simulator.amazonses.com"
+  "sample_recipient_pattern": "success+sample{index:03d}@simulator.amazonses.com",
+  "service_bindings": {
+    "status": null,
+    "readiness": null,
+    "reporting": null,
+    "legacy_test_mode_evidence": null
+  },
+  "workshop_mode": "plot_twist",
+  "conference_list_story": "reconnected_existing_customers",
+  "discovery_handoff_path": null,
+  "original_selected_cohort_path": null,
+  "operation_scope": "additional_list_one_off",
+  "reporting_requested": true
 }

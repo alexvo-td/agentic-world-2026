@@ -27,3 +27,7 @@ tdx engage campaign launch "<campaign-id>" --campaign-type list-campaign --works
 Use `--yes` for authorized draft push; for launch use it only after the reviewed preview and explicit Launch instruction. Never infer launch authorization from technical-command permission.
 
 Use `tdx delivery senders` for sender listing as confirmed by the user. Sender discovery is in the delivery namespace. Inspect installed help automatically for output flags; do not pass Engage workspace flags unless supported. Verify workspace-sender relationships separately through configuration/readiness.
+
+## Readiness, status and query results
+
+Follow [service-bindings.md](service-bindings.md) to bind readiness/status response fields, terminal states, bounded polling and query job/result retrieval. The listed commands do not establish those response contracts. Inspect installed help and current host/service documentation automatically; persist the verified binding before relying on its result. Keep local validation, reference resolution, saved readback and service readiness distinct.

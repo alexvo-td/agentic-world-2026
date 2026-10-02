@@ -47,7 +47,7 @@
     },
     {
       "name": "agenticworld-engage-campaign",
-      "description": "Use only for the Agentic World 2026 Northstar Home & Living win-back workshop: prepare a reusable synthetic audience and data-grounded cohort/persona comparison, guide overdue-customer and email-direction choices, personalize the fictional 20% offer, preview and set up or launch its CSV List campaign, or request/refresh its post-delivery performance report.",
+      "description": "Use for the Agentic World Northstar Engage workshop, especially the conference-list Plot-twist stage: inherit Customer Discovery decisions, assess an added list, prepare a separate participant confirmation recipient, review and launch an approved personalized email, and inspect live performance. Also supports standalone win-back preparation and CSV-only requests; keep business targeting separate from workshop self-test delivery.",
       "source": "./",
       "strict": false,
       "skills": [

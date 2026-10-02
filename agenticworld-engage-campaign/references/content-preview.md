@@ -2,7 +2,7 @@
 
 ## Fixed brief
 
-Re-engage overdue customers with a fictional workshop offer: 20% OFF selected home favorites. Subject: `{{profile.first_name}}, enjoy 20% off your next home refresh`. Greeting: `Hi {{profile.first_name}},`. Keep all three product cards by default; support an explicit choice of two by adapting only the personal copy. Recommend home-refresh or welcoming win-back messaging under guided-journey.md and wait for the participant's content choice unless already supplied/delegated. Store next_best_product_id for later exercises without conditional product rendering in this exercise.
+Re-engage overdue customers with a fictional workshop offer: 20% OFF selected home favorites. Subject: `{{profile.first_name}}, enjoy 20% off your next home refresh`. Greeting: `Hi {{profile.first_name}},`. Keep all three product cards by default; support an explicit choice of two by adapting only the personal copy. In Plot-twist, inherit the selected copy and recommend only a justified subject/opening change under guided-journey.md; in standalone mode guide home-refresh versus welcoming win-back. Wait only for unresolved content choices. Store next_best_product_id for later exercises without conditional product rendering in this exercise.
 
 The supplied source is retained in `assets/northstar-source.html`. The normalized workshop template is `assets/northstar-email.html`, with stylesheet embedded; `assets/northstar.css` retains the original CSS. It removes all benchmark/reference prices and conflicting discount rates. Do not present other retailers' prices as Northstar prices. Do not invent sale amounts, deadlines or promo codes. Use host overrides consistently if a different workshop offer is supplied.
 
@@ -30,15 +30,17 @@ Show a rendered personalized email followed by the summary:
 | Audience strategy | Selected criteria and actual business-cohort count |
 | Message direction | Selected theme and changes made |
 | Sending to | Actual eligible count; exclusions summarized |
-| Your recipient | Supplied email |
+| Your recipient | Supplied email; label delivery-confirmation role in Plot-twist |
 | Subject | Resolved participant subject |
 | Offer | 20% off selected home favorites |
 | Products | Japandi Sofa, Geometric Area Rug, Modern & Chic Floor Lamp |
-| Audience signal | Fictional overdue purchase; 180 days vs expected 90 by default |
+| Audience signal | Observed business-cohort signals; QA has no purchase/churn defaults |
 | Sender | Actual verified display name and from/reply-to addresses |
 | Settings | One-off, intended Engage workspace, timing, tracking settings |
 | Status | Draft / blocked / Ready to launch based on evidence |
 
-Show “Launch this campaign” as the sole business action once ready. Do not add a second confirmation after the participant chooses it. Explain actual selection and destinations plainly: generated samples route to the SES success simulator, while the participant receives their own personalized email. Show selected profile rows, unique destinations, excluded rows and service-reported send count separately; simulator events do not represent human inbox engagement.
+Show “Launch this campaign” as the sole business action once ready. Do not add a second confirmation after the participant chooses it. Explain actual selection and destinations plainly: generated samples route to the SES success simulator, while the participant receives their own personalized email. Show business and QA counts, unique destinations, excluded rows and service-reported send count separately; simulator events do not represent human inbox engagement.
 
-Fingerprint the campaign ID, HTML, subject, eligible CSV, sender and settings. Save the fingerprint with preview state. Local rendering demonstrates personalization but is not proof of server merge behavior. Validate service configuration independently.
+Compute the versioned read-back fingerprint under launch-review.md, including saved recipient data and mappings. Save it with preview state; do not use the local eligible CSV alone as its recipient evidence. Local rendering demonstrates personalization but is not proof of server merge behavior. Validate service configuration independently.
+
+Show a concise inherited/current-versus-proposed subject/opening comparison when requesting a change. Use conference wording only when supported by the list fixture/provenance; do not present fixed sofa/rug/lamp cards as individualized recommendations. A QA preview must use the same saved content/mappings and supplied name as sending, with no invented behavioral fields.
