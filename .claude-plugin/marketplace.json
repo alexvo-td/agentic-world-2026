@@ -55,6 +55,15 @@
       ]
     },
     {
+      "name": "stage-table",
+      "description": "Use when an Agentic World 2026 attendee runs /stage-table or asks to stage or normalize a retail_raw identity table, including \"Help me stage this table: retail_raw.raw_dw_customer_snapshot\". Use the pinned fast-path recipe for raw_dw_customer_snapshot; inspect, propose direct SQL, wait for approval, create one table, and validate. Never use for workflows, unification, fact/event staging, or production data.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./stage-table"
+      ]
+    },
+    {
       "name": "html-dashboard-design",
       "description": "Apply the Treasure Data brand design system to every HTML file (.html) created in this folder — reports, dashboards, visualizations, tables, and all other HTML deliverables.",
       "source": "./",
