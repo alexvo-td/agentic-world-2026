@@ -1,384 +1,380 @@
 ---
 name: omni-channel-reporting
-description: Use when the user asks for "omni-channel report", "marketing performance dashboard", "channel performance analysis", "ROAS analysis", "CTR analysis", "campaign performance report", "media mix analysis", "marketing dashboard", "channel comparison", or wants to analyze marketing spend, revenue, and performance across channels (email, Facebook, paid search, SMS, display, video). Also trigger on "marketing analytics", "campaign ROI", "segment performance by channel", or "marketing trends".
+description: Use when the user asks for "omni-channel report", "marketing performance dashboard", "channel performance analysis", "ROAS analysis", "CTR analysis", "campaign performance report", "media mix analysis", "marketing dashboard", "channel comparison", or wants to analyze marketing spend, revenue, and performance across channels (email, Facebook, paid search, SMS, display, video, push, in-app). Also trigger on "marketing analytics", "campaign ROI", "segment performance by channel", or "marketing trends".
 ---
 
-# Omni-Channel Reporting Agent
+# Omni-Channel Reporting — Fast Template Mode
 
-You are a marketing performance analysis agent. Analyze campaign data across channels and render interactive React dashboards with actionable insights.
+Generate marketing performance dashboards in under 60 seconds by injecting query results into a pre-built template. No dashboard code generation needed.
 
-## Data Discovery
+## Skill Directory Resolution (do this FIRST)
 
-Before querying, discover the user's database and schema:
+Locate this skill's directory so you can read bundled files. Run:
 
-1. **Ask** the user which database to use, or check if they specified one. If unclear, use `tdx databases` to list available databases and let them pick.
-2. **Discover tables**: Run `tdx tables <database>` to find marketing/channel/campaign tables.
-3. **Inspect schema**: Run `tdx describe <database>.<table> --json` to get column names and types.
-4. **Identify key columns**: Look for columns representing: channel, spend, revenue, roas, ctr, cpc, conversion_rate, campaign, creative/messaging, segment/audience, and time/month.
-
-### Expected Column Patterns
-
-The dashboard needs these metric types (column names may vary):
-
-| Metric | Common column names |
-|--------|-------------------|
-| Channel | channel, channel_name, media_channel, platform |
-| Spend | spend, media_spend, cost, ad_spend |
-| Revenue | revenue, attributed_revenue, total_revenue |
-| ROAS | roas, return_on_ad_spend (or compute: revenue/spend) |
-| CTR | ctr, click_through_rate (or compute: clicks/impressions) |
-| CPC | cpc, cost_per_click (or compute: spend/clicks) |
-| Conversion Rate | conversion_rate, conv_rate, cvr |
-| Campaign | campaign, campaign_name |
-| Creative | creative_messaging, creative, ad_copy, messaging |
-| Segment | segment_name, segment, audience, audience_name |
-| Time | month, date, time, period |
-
-If a column is missing, compute it from available data or omit that dimension from the dashboard.
-
-## Workflow
-
-Follow this CTE + ReAct loop:
-
-1. **Thought**: Break down the request. Identify needed metrics, joins, filters, and tables.
-2. **Action**: Use `tdx describe` to discover schema, then `tdx query` to run queries. Map discovered columns to the expected metrics above.
-3. **Observation**: Describe the result. Compare to benchmarks. State insights.
-4. **Repeat**: Loop if further exploration is needed.
-5. **Render**: Use `render_react` to display the interactive dashboard.
-
-### Query Rules
-
-- Run queries with: `tdx query "SELECT ... FROM <database>.<table> ..." --limit 500`
-- Always fully qualify table names with `<database>.`
-- Do NOT start with a top-level `WITH` clause — use nested subqueries if CTEs are needed:
-  ```sql
-  SELECT col FROM (SELECT col FROM some_table) AS subq
-  ```
-
-## Metrics Framework
-
-### Universal Metrics (all channels)
-- **Revenue, Spend, ROAS** — always shown in pills and tables
-
-### Primary Channel-Native Metrics
-
-| Channel | Primary KPIs | Notes |
-|---|---|---|
-| **Email** | Open Rate, Click Rate, Conv Rate | Funnel: send → open → click → purchase |
-| **Paid Social** | Impressions, CTR, CPA | Reach + efficiency; ROAS secondary |
-| **SMS** | Sends, Open Rate, Click Rate | Direct engagement; highest open rates |
-| **Display** | Impressions, Viewability, CTR | Awareness play; CTR 0.1–0.4% is normal |
-| **Paid Search** | Clicks, CTR, CVR, CPC | Intent channel; CVR + CPC are key |
-| **Video** | Impressions, VCR, CPV | Branding; revenue attribution is indirect |
-
-### Benchmarks
-- E-commerce ROAS: 4–5x
-- SaaS ROAS: 3–4x
-- Display CTR: 0.10–0.40% (anything above 1% is suspicious — likely not display data)
-- Social CTR: 1–5% (targeted retargeting can reach 8–10%)
-- Email Open Rate: 15–35%
-- SMS Open Rate: 20–45% (typically highest of any channel)
-- Search CVR: 1–5% (branded terms higher)
-
-### Channel-to-Purpose Mapping
-- Email = retention
-- Paid search = intent capture
-- Paid social = discovery / retargeting
-- Display = reach / awareness
-- Video = branding
-- SMS = retention / rescue
-- Direct mail = acquisition
-
-## Dashboard Rendering
-
-### Output File Naming — Unique Filenames Required
-
-**Never overwrite an existing dashboard.** Every generated HTML file must have a unique name combining the company name and a timestamp:
-
-```
-{working_dir}/{company}_omnichannel_{YYYYMMDD_HHMM}.html
+```bash
+bash -c '
+SKILL="omni-channel-reporting"
+USER_PATH="$HOME/.treasure-work/.claude/skills/$SKILL/SKILL.md"
+if [ -f "$USER_PATH" ]; then
+  echo "SKILL_DIR=$(dirname "$USER_PATH")"
+else
+  PLUGIN_MATCH=$(compgen -G "$HOME/.treasure-work/.claude/plugins/*/skills/$SKILL/SKILL.md" 2>/dev/null | head -1)
+  if [ -n "$PLUGIN_MATCH" ]; then
+    echo "SKILL_DIR=$(dirname "$PLUGIN_MATCH")"
+  else
+    echo "SKILL_DIR=NOT_FOUND"
+  fi
+fi
+'
 ```
 
-Examples:
-- `tumi_omnichannel_20260428_1435.html`
-- `pacsun_omnichannel_20260428_0912.html`
+Store the result as `SKILL_DIR`. All file references below are relative to this directory:
+- Template: `$SKILL_DIR/reference/template.html`
+- SQL templates: `$SKILL_DIR/sql/*.sql`
+- Column patterns: `$SKILL_DIR/column_patterns.json`
+- Data schema docs: `$SKILL_DIR/reference/data-schema.md`
 
-Derive the company name from the active CDP database or parent segment (e.g., `tumi_demo_2` → `tumi`). Always use today's date and current time in `YYYYMMDD_HHMM` format when writing the file.
-
-### Environment Detection
-
-Before rendering, detect which environment you are running in:
-
-- **Treasure Studio**: The tool `render_react` (or `mcp__tdx-studio__render_react`) is available. Use it.
-- **Treasure AI Studio** (or any environment without `render_react`): Generate a **self-contained HTML file** instead. The HTML must:
-  1. Be a **single file** — no CDN links, no external CSS/JS. Everything inline.
-  2. Use **vanilla JS + DOM manipulation** — no React, no JSX, no Recharts, no framework imports.
-  3. **Inline all styles** in a `<style>` block. Translate Tailwind classes into plain CSS. Use CSS variables for theming.
-  4. **Recreate charts as inline SVG** — bar charts, line charts, heatmaps rendered as SVG elements generated by vanilla JS.
-  5. **Preserve all interactive features** — 9 tabs, channel deep dives, sub-tabs, KPI cards — using vanilla JS event listeners.
-  6. Embed the data object as `const DATA = <JSON>;` in a `<script>` block.
-  7. Include a dark/light theme toggle.
-  8. Output the HTML directly in your response (the platform will render it).
-
-**How to detect:** Check your available tools at the start of the rendering phase. If `render_react` is in your tool list, use it. If not, generate self-contained HTML.
-
-### If `render_react` is available (Treasure Studio):
-
-Use `render_react` for ALL visualizations. Build the dashboard data from query results, then embed it as a JSON constant inside the React component.
-
-### For broad requests ("dashboard", "report", "overview"), build a full tabbed dashboard with 10 tabs:
-
-1. **Overview** — Top KPI cards (Total Spend, Revenue, Avg ROAS, Active Campaigns) + channel spend vs revenue BarChart + clickable channel KPI cards in 2×3 grid (each showing funnel role badge, ROAS, primary KPI, spend, revenue — clicking jumps to that channel's deep dive) + marketing funnel visualization showing budget allocation by stage (Awareness→Consideration→Intent→Conversion)
-2. **Segments** — ROAS heatmap showing all segments x all channels with color-coded cells (green=high, red=low) + Best Performer and Needs Attention callout cards
-3. **Email** — Channel deep dive (see Channel Deep Dive Structure below)
-4. **Paid Social** — Channel deep dive
-5. **Paid Search** — Channel deep dive
-6. **Display** — Channel deep dive
-7. **SMS** — Channel deep dive
-8. **Video** — Channel deep dive
-9. **Direct Mail** — Channel deep dive
-10. **Journey Performance** — Always the final tab. See Journey Performance Tab Specification below.
-
-### Channel Deep Dive Structure
-
-Each channel tab has:
-1. **KPI pills row** — 6 pills: Revenue, Spend, ROAS (universal), then 3 channel-native metrics (see below)
-2. **Campaign table** — channel-specific columns (see below)
-3. **ROAS by Segment** bar chart (right side, consistent across all channels)
-4. **Callout** — one insight card (finding or warning)
-
-#### KPI Pills — Channel-Native (pills 4–6)
-
-Use the first 3 pills for Revenue, Spend, ROAS universally. Pills 4–6 must reflect how that channel is actually measured:
-
-| Channel | Pill 4 | Pill 5 | Pill 6 |
-|---|---|---|---|
-| **Email** | Open Rate (avg) | Click Rate (avg) | Conv Rate (avg) |
-| **Paid Social** | Total Impressions | Avg CTR | Avg CPA |
-| **SMS** | Total Sends | Open Rate (avg, highlight #1 if top channel) | Click Rate (avg) |
-| **Display** | Total Impressions | Avg Viewability | Avg CTR |
-| **Paid Search** | Total Clicks | Avg CTR | Avg CVR |
-| **Video** | Total Impressions | Avg VCR | Avg CPV |
-
-Never use "Peak ROAS", "Eng. Rate", or "Best Segment ROAS" as pills — these are table-level insights, not channel-level KPIs.
-
-#### Campaign Table Columns — Channel-Specific
-
-Each channel's campaign table must use columns native to how that channel is measured. Do NOT use the same generic column set (open/click/conv) across all channels:
-
-| Channel | Table columns |
-|---|---|
-| **Email** | Campaign \| Segment \| Revenue \| ROAS \| Open Rate \| Click Rate \| Conv Rate |
-| **Paid Social** | Campaign \| Segment \| Revenue \| Impressions \| CTR \| CPA \| ROAS |
-| **SMS** | Campaign \| Segment \| Revenue \| Sends \| Open Rate \| Click Rate \| ROAS |
-| **Display** | Campaign \| Segment \| Revenue \| Impressions \| Viewability \| CTR \| CPA |
-| **Paid Search** | Campaign \| Segment \| Revenue \| Clicks \| CTR \| CVR \| CPC |
-| **Video** | Campaign \| Segment \| Impressions \| Views \| VCR \| CPV \| Spend |
-
-#### Derived Metrics (when source data lacks channel-native columns)
-
-Campaign tables in CDP often store only generic `open_rate`, `click_rate`, `conversion_rate`. When the source table doesn't have channel-specific fields, derive them from spend and revenue:
-
-| Metric | Derivation |
-|---|---|
-| **Impressions (Social)** | `spend / $7 × 1000` (assumes $7 CPM for paid social) |
-| **Impressions (Display)** | `spend / $3.50 × 1000` (assumes $3.50 CPM for display) |
-| **Sends (SMS)** | `spend / $0.04` (assumes $0.04 per message) |
-| **Clicks (Search)** | `(revenue / AOV) / CVR` where AOV ≈ $500 for luxury retail |
-| **CPC (Search)** | `spend / clicks` |
-| **CPA** | `spend / (revenue / AOV)` |
-| **Viewability** | Use `open_rate` field if 50–80% range; otherwise default 65% avg |
-| **CTR (Display)** | Realistic display CTR is 0.10–0.40% — do NOT reuse email click_rate |
-
-Always add a `title` tooltip on derived column headers noting the derivation method (e.g., `title="Derived at $7 CPM"`).
-
-#### Right-Side Bar Chart
-
-Keep "ROAS by Segment" for all channels — it's the universal business performance signal. Channel-specific bar charts (CPA, CVR, VCR) can be added as a second chart but should not replace ROAS.
-
----
-
-### Journey Performance Tab Specification
-
-**Always include this as the final tab** in the omni-channel dashboard. Do NOT query the API for live journey metrics — journeys are typically in draft or newly activated. Instead, **fabricate plausible simulated data** grounded in actual segment sizes and real AOV from the workshop's CDP data.
-
-Journeys follow a **3-stage, omni-channel escalation model**: Stage 1 (Email + App Push) → Stage 2 (Social + Search retargeting) → Stage 3 (VIP SMS last-chance). Every section of this tab must reflect that structure — not a flat single-channel funnel.
-
-#### Summary KPI Strip (6 pills)
-
-| Pill | Value guidance |
-|---|---|
-| Total Enrolled | Sum of all journey entry segment sizes (use actual `tdx sg list` sizes) |
-| Goal Achieved | 8–18% of entries overall — the punchline metric |
-| Revenue Attributed | Goal Achieved × avg 2nd-order AOV (use real AOV if queried; else estimate from brand/LTV) |
-| Stage 1 Conversion | 6–12% convert in Stage 1 (Email+App) — highest ROAS stage |
-| Stage 2 Escalation | 50–65% of non-converters reach Stage 2 (Social+Search) |
-| Avg Days to Convert | Weight by stage: Stage 1 ≈ 3–5 days, Stage 2 ≈ 8–12 days, Stage 3 ≈ 18–22 days |
-
-#### Per-Journey Cards (one card per active journey)
-
-Each card reflects the 3-stage journey structure. Required elements:
-
-**1. Journey header**
-- Name, entry segment + qualifier
-- Channel sequence badge: `Email + App → Social/Search → VIP SMS`
-- Overall conversion rate badge
-
-**2. Stage-escalation funnel** (5 steps, not 4)
+## Architecture
 
 ```
-Entered → Stage 1 Active → Stage 2 Escalated → Stage 3 Escalated → Converted
+SKILL.md                         ← You are here: orchestration instructions
+reference/
+  template.html                  ← Complete dashboard (static shell) — inject DATA and render
+  data-schema.md                 ← DATA contract documentation
+sql/
+  channel_summary_preagg.sql     ← For tables with spend/revenue columns
+  channel_summary_events.sql     ← For event-level tables (send/open/click)
+  campaign_detail_preagg.sql     ← Campaign-level detail (pre-aggregated)
+  segment_heatmap_preagg.sql     ← Segment × Channel ROAS heatmap (pre-aggregated)
+  segment_heatmap_events.sql     ← Segment × Channel ROAS heatmap (event-level)
+  customer_summary.sql           ← Customer segments for journey simulation
+column_patterns.json             ← Auto-detection column mapping
 ```
 
-Simulate realistic drop-off at each transition:
-- Stage 1 Active: 65–75% of entries (some filtered out immediately)
-- Stage 2 Escalated: 50–60% of Stage 1 non-converters (some convert in S1 or exit)
-- Stage 3 Escalated: 40–55% of Stage 2 non-converters
-- Converted: 8–18% of original entries total
+## Step 0 — Identify Database and Table (10 seconds)
 
-**3. Per-stage conversion breakdown** — for each stage show:
-- Customers who entered that stage
-- Customers who converted at that stage (not in a later stage)
-- Stage ROAS (Stage 1 highest, Stage 3 lowest — escalating cost model)
-- Key channel for that stage
+**If the user provided a database and/or table name**, skip discovery — go to Step 1.
 
-| Stage | Expected conv rate | Channel | ROAS relative to S1 |
-|---|---|---|---|
-| Stage 1: Email + App Push | 6–12% of enrolled | Email (primary), App Push (branch) | Baseline (highest) |
-| Stage 2: Social + Search | 3–6% of enrolled | Meta/Social + Google/Search (High LTV branch) | 40–60% of S1 |
-| Stage 3: VIP SMS | 1–3% of enrolled | SMS exclusive offer | 20–35% of S1 |
+**Otherwise**, discover:
+1. Run `tdx databases` (or filter with a pattern if the user gave a hint)
+2. Run `tdx tables "<database>.*"` on the target database
+3. Look for tables with marketing/campaign/engagement in the name
 
-**4. Decision point breakdown (two per journey)**
+Pick the primary engagement/campaign table and note any supporting tables (orders, customers, segments).
 
-Show both decision points as side-by-side branch cards within the journey card:
+## Step 1 — Schema Detection (5 seconds)
 
-*Stage 1 branch — "Has App / Has Mobile Consent":*
-- App Push branch: ~30–40% of S1 customers qualify → higher conversion (+8–12pp vs email-only)
-- Email-only branch: 60–70% → email conversion rate only
+Run ONE `tdx describe <database>.<table> --json` call.
 
-*Stage 2 branch — "High LTV / High Propensity":*
-- Search retargeting (High LTV): ~35–45% of S2 customers → higher conv (~15–20% of S2 entrants)
-- Social only (Standard): 55–65% → lower conv (~8–12% of S2 entrants)
+Then load `column_patterns.json` (in this skill's directory) and match discovered columns:
 
-**5. Top performing step callout** per card — always the Stage 1 App Push branch or the Stage 2 High LTV → Search routing (whichever has the highest absolute conversion rate)
+```
+Read column_patterns.json → for each metric type, check if any of the table's columns match the patterns
+```
 
-#### Stage-Level Intelligence Section
+### Determine table pattern
 
-Show a 3-column grid — one column per journey — with stage-by-stage breakdown:
+**Pattern A — Pre-aggregated**: Table has BOTH a spend-type column AND a revenue-type column.
+→ Use `sql/channel_summary_preagg.sql` and `sql/campaign_detail_preagg.sql`
 
-For each journey × stage, display:
-- Stage name + channels active in that stage
-- Customers entering that stage (count + % of original enrolled)
-- Customers converting at that stage
-- Stage conversion rate
-- A CSS progress bar scaled to the stage's share of total conversions
-- Both decision point branch outcomes as sub-rows (indented)
+**Pattern B — Event-level**: Table has an `event_type` column with values like send/open/click, but no spend column.
+→ Use `sql/channel_summary_events.sql`
+→ Look for a separate orders/transactions table for revenue attribution
+→ Look for a customer/segment table for segment breakdown
 
-**Key narrative to surface**: Stage 1 Email+App produces the most conversions at the lowest cost. Stage 2 and 3 exist to capture value that would otherwise be permanently lost — but at higher per-conversion cost. The business case for all 3 stages is the incremental revenue vs. zero-contact baseline.
+Record the column mapping as a simple lookup, e.g.:
+```
+channel → "channel"
+campaign → "campaign_name"
+event_type → "event_type"
+customer_id → "customer_id"
+```
 
-#### Revenue Attribution by Stage
+## Step 2 — Run Queries (20 seconds)
 
-Three stacked/grouped bar charts (one per journey), each showing revenue split across Stage 1 / Stage 2 / Stage 3:
-- Stage 1 typically drives 55–65% of total journey revenue
-- Stage 2 drives 25–35%
-- Stage 3 drives 8–15%
+Run **at most 3 queries** in parallel (use backgrounded bash with `&` and `wait`):
 
-Below the charts: **Stage ROAS comparison table** — shows that Stage 1 ROAS is 3–5× higher than Stage 3, reinforcing the "owned channels first" strategy.
+### Query 1: Channel × Campaign summary
+Substitute the mapped column names into the appropriate SQL template.
 
-#### Cross-Journey Intelligence (4 metric tiles)
+For Pattern A (pre-aggregated):
+```bash
+tdx query "$(cat sql/channel_summary_preagg.sql | sed 's/{{database}}/DBNAME/g; ...')" --limit 200 --json
+```
 
-| Tile | Content |
-|---|---|
-| Stage 1 Coverage | % of enrolled who received the email+app push — should be close to 100%; gaps indicate consent/deliverability issues |
-| Blended Journey ROAS | Total attributed revenue ÷ estimated journey send cost (~8–10×, higher than paid media blended); callout that this beats the paid channel average |
-| Stage 3 Rescue Value | Revenue recovered exclusively by the VIP SMS stage — customers who would have been permanently lost without it |
-| Purchase Window Gap | Show real avg days to 2nd purchase (from transaction data if queried; else 60–90 days) vs combined journey window (Stages 1–3 span 17–21 days) — even a 3-stage journey exits too early |
+For Pattern B (event-level):
+```bash
+tdx query "<substituted channel_summary_events.sql>" --limit 200 --json
+```
 
-#### Top 3 Optimization Signals
+### Query 2: Customer/Segment summary (for journey simulation)
+```bash
+tdx query "<substituted customer_summary.sql>" --limit 200 --json
+```
 
-1. **Extend journey window past Stage 3** — the 3-stage journey spans ~17–21 days but the natural repeat purchase window is 60–90 days. A Stage 4 "long-tail nurture" (lightweight email at day 30 + day 60) could recover another 4–6% of non-converters. Project at Stage 1 email conversion rate (lowest cost assumption). Est. revenue: highest of the three signals.
+### Query 3: (Optional) Segment × Channel breakdown
+Only if a segment/loyalty/tier column exists. Pivot engagement by segment × channel for the heatmap.
 
-2. **Increase Stage 1 App Push reach** — only 30–40% of customers qualify for the App Push branch (has app installed). Growing app install rate by 10pp increases Stage 1 conversion by ~2pp with zero incremental media cost. Frame as an app download campaign targeting the journey entry segments before journey activation.
+**Run all queries simultaneously** to save time:
+```bash
+tdx query "QUERY1" --limit 200 --json --output /tmp/ocr_channels.json &
+tdx query "QUERY2" --limit 200 --json --output /tmp/ocr_customers.json &
+tdx query "QUERY3" --limit 200 --json --output /tmp/ocr_segments.json &
+wait
+```
 
-3. **Lower Stage 2 LTV threshold for Search routing** — currently only High LTV customers (top 35–45%) get Search retargeting in Stage 2. Lowering the threshold to include the next LTV tier adds ~15–20% more customers to the higher-converting Search branch. Project at Stage 2 Search conversion rate (conservative vs High LTV rate). Est. revenue: second highest signal.
+## Step 3 — Shape DATA Object (10 seconds)
 
-Include revenue estimate for each signal grounded in actual segment sizes and AOV.
+Transform query results into the DATA schema the template expects. This is the critical step — the template renders whatever DATA it receives.
 
-#### Simulated Data Disclaimer
+### DATA Schema
 
-Always end the tab with:
-> *"Simulated performance data — journeys activated [today's date]. Live metrics available after first full refresh cycle. Stage structure reflects 3-stage omni-channel design (Email+App → Social/Search → VIP SMS). Segment sizes grounded in actual CDP data. AOV grounded in real transaction data."*
-
----
-
-### For narrow requests (single metric or channel), build a focused component with relevant KPI cards and chart.
-
-### Component Rules (CRITICAL)
-
-- Single function component only — no sub-components, no helper components
-- All JSX must be inlined directly — no abstractions like `KPICard`, `TabPanel`
-- Use `useState` for tab switching and filters
-- Recharts components are available as globals (BarChart, LineChart, PieChart, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, Bar, Line, Pie, Area) — do NOT import them
-- Use `Bar` not `BarChart.Bar`, `Line` not `LineChart.Line`, `Pie` not `PieChart.Pie` — these are standalone globals
-- React hooks (useState, useEffect, useMemo) are available as globals — do NOT import them
-- Tailwind CSS classes are available for styling
-- Embed query result data directly as a JSON array inside the component
-- Never use `<` or `>` in text nodes — use words or HTML entities
-
-### Color Palette — Treasure Data Brand
-
-```js
-const C = {
-  primary: '#1A57DB', primaryMed: '#5A81DD', primaryLight: '#C7D4F3', primaryDark: '#252D6E',
-  coral: '#FF6B6B', teal: '#2EC4B6', amber: '#FFB84D', purple: '#7C5CFC',
-  green: '#34D399', pink: '#F472B6',
-  bg: '#0F172A', card: '#1E293B', cardHover: '#334155', border: '#334155',
-  text: '#F8FAFC', textMuted: '#94A3B8', textDim: '#64748B'
+```javascript
+const DATA = {
+  meta: {
+    company: "",           // Derive from database name (strip _demo, _prod, underscores → spaces, title case)
+    database: "",          // Actual database name
+    generatedAt: "",       // Today's date ISO
+    dataRange: { from: "", to: "" }  // From query results or "All time"
+  },
+  kpis: {
+    totalSpend: 0,         // Sum across all channels
+    totalRevenue: 0,
+    avgRoas: 0,            // totalRevenue / totalSpend
+    activeCampaigns: 0,    // Count distinct campaigns
+    totalCustomers: 0,     // From customer query
+    avgConvRate: 0         // Weighted average conversion rate
+  },
+  channels: [              // One entry per discovered channel
+    {
+      name: "email",       // Raw channel value from data
+      label: "Email",      // Display name (title case)
+      role: "",            // From CHANNEL_ROLES lookup below
+      color: "",           // From CHANNEL_COLORS lookup below
+      spend: 0,
+      revenue: 0,
+      roas: 0,
+      nativeKpis: [        // 3 channel-native KPIs (pills 4-6)
+        { label: "Open Rate", value: 28.5, format: "%" }
+        // See CHANNEL_NATIVE_KPIS below
+      ],
+      campaigns: [
+        {
+          name: "",
+          segment: "",     // From segment column or "All" if none
+          revenue: 0,
+          roas: 0,
+          metrics: []      // Remaining column values in order matching columns[]
+        }
+      ],
+      columns: [],         // Column headers for campaign table
+      columnFormats: [],   // Format per column: "$", "%", "x", "#", ""
+      roasBySegment: [     // ROAS breakdown by customer segment
+        { segment: "", value: 0 }
+      ],
+      insight: ""          // Generate 1-sentence insight
+    }
+  ],
+  segmentHeatmap: [        // One row per segment
+    {
+      segment: "",
+      values: {}           // { channel_name: roas_value, ... }
+    }
+  ],
+  journeys: { ... }        // See Journey Simulation below
 };
 ```
 
-Channel colors: email=coral, facebook=primary, paid_search=teal, display=amber, sms=purple, video=green.
+### Channel Lookups
 
-### Number Formatting
+```javascript
+const CHANNEL_ROLES = {
+  email: "Retention", paid_social: "Discovery", facebook: "Discovery",
+  paid_search: "Intent Capture", search: "Intent Capture",
+  display: "Awareness", video: "Branding",
+  sms: "Retention / Rescue", push: "Re-engagement",
+  in_app: "Engagement", direct_mail: "Acquisition"
+};
+const CHANNEL_COLORS = {
+  // Treasure AI brand chart sequence: Primary → Secondary 1 → Secondary 2 → Accents
+  email: "#494FFF", paid_social: "#8753FF", facebook: "#8753FF",
+  paid_search: "#C466D4", search: "#C466D4",
+  display: "#9DCC4C", video: "#F69068",
+  sms: "#8753FF", push: "#C466D4",
+  in_app: "#9DCC4C", direct_mail: "#D9E47C"
+};
+```
 
-- Currency: compact notation (`$1.2M`, `$529K`)
-- Percentages: with `%` symbol (e.g., `3.50%`)
-- ROAS: with `x` suffix (e.g., `2.31x`)
-- Use a helper: `const fmt = (n,p) => p==='$' ? '$'+(n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':n.toFixed(0)) : p==='%' ? n.toFixed(2)+'%' : n.toFixed(2)+'x';`
+### Channel-Native KPIs (pills 4-6)
 
-### Layout
+Derive from available data. For each channel:
 
-- Dark background (`#0F172A`) with slate card surfaces (`#1E293B`)
-- Gradient title header using TD primary blue to teal
-- Pill badges for channel funnel roles
-- Color-coded priority tags on recommendations
-- Cards with `border-radius: 12px` and subtle `1px solid #334155` borders
+| Channel | Pill 4 | Pill 5 | Pill 6 |
+|---|---|---|---|
+| email | Open Rate (avg, %) | Click Rate (avg, %) | Conv Rate (avg, %) |
+| paid_social / facebook | Total Impressions (#) | Avg CTR (%) | Avg CPA ($) |
+| sms | Total Sends (#) | Open Rate (avg, %) | Click Rate (avg, %) |
+| display | Total Impressions (#) | Avg Viewability (%) | Avg CTR (%) |
+| paid_search / search | Total Clicks (#) | Avg CTR (%) | Avg CVR (%) |
+| video | Total Impressions (#) | Avg VCR (%) | Avg CPV ($) |
+| push | Total Sends (#) | Open Rate (avg, %) | Click Rate (avg, %) |
+| in_app | Total Impressions (#) | Open Rate (avg, %) | Click Rate (avg, %) |
 
-## Output Format
+When source data lacks a metric, derive it:
 
-### Summary
-Concise overview of key findings (2-3 sentences)
+| Metric | Derivation |
+|---|---|
+| Impressions (Social) | spend / 7 × 1000 ($7 CPM) |
+| Impressions (Display) | spend / 3.50 × 1000 ($3.50 CPM) |
+| Sends (SMS) | spend / 0.04 ($0.04/msg) |
+| Clicks (Search) | (revenue / AOV) / CVR |
+| CPC | spend / clicks |
+| CPA | spend / conversions |
+| Viewability | Use open_rate if 50-80%; else default 65% |
 
-### Analysis Details
-Detailed segment-level performance and observations
+### Channel-Specific Campaign Table Columns
 
-### Visualizations
-Interactive React dashboard via `render_react`
+| Channel | Columns |
+|---|---|
+| email | Campaign, Segment, Revenue, ROAS, Conversions, Open Rate, Click Rate, Conv Rate |
+| paid_social | Campaign, Segment, Revenue, ROAS, Impressions, CTR, CPA, Conv Rate |
+| sms | Campaign, Segment, Revenue, ROAS, Conversions, Sends, Open Rate, Click Rate |
+| display | Campaign, Segment, Revenue, ROAS, Impressions, Viewability, CTR, CPA |
+| paid_search | Campaign, Segment, Revenue, ROAS, Clicks, CTR, CVR, CPC |
+| video | Campaign, Segment, Revenue, ROAS, Impressions, Views, VCR, CPV |
+| push | Campaign, Segment, Revenue, ROAS, Conversions, Sends, Open Rate, Click Rate |
+| in_app | Campaign, Segment, Revenue, ROAS, Conversions, Impressions, Open Rate, Click Rate |
 
-### Recommendations
-2-3 strategic, actionable next steps:
-- Increase spend on top-performing segments
-- Pause or reduce underperformers
-- Suggest creative, targeting, or landing page tests
-- Recommend new segmentation opportunities
+### Spend Estimation (when no spend column exists)
 
-## Example Output Table
+Use **revenue-based ratios** to estimate spend per channel. This produces realistic ROAS values (2-7x range) regardless of send volume. Per-send cost models can produce absurdly high ROAS with small or synthetic datasets.
 
-| Segment | ROAS/CTR | Spend | Revenue | Supporting Metrics | Action |
-|---------|----------|-------|---------|-------------------|--------|
-| Facebook A | 5.2x | $5,000 | $26,000 | CTR: 1.8%, CPC: $1.20 | Increase budget |
-| Search B | 3.1x | $3,500 | $10,850 | CTR: 2.2%, CPC: $1.50 | Optimize keywords |
-| Email C | 4.8x | $800 | $3,840 | CTR: 3.5%, Conv: 4.2% | Test lifecycle triggers |
-| SMS D | 2.7x | $400 | $1,080 | CTR: 6.1%, Conv: 2.0% | Refine audience |
-| Display | 0.7% | $2,000 | $1,200 | CPC: $2.85 | Pause or reallocate |
-| Video E | 1.1% | $1,500 | N/A | CPC: $3.10 | Test new creative |
+**Primary method — Revenue-based ratio** (preferred):
+
+| Channel | Spend Ratio | Typical ROAS | Rationale |
+|---|---|---|---|
+| email | revenue × 0.15 | ~6.7x | Owned channel, low marginal cost |
+| sms | revenue × 0.22 | ~4.5x | Per-message cost + platform fees |
+| push | revenue × 0.25 | ~4.0x | Owned channel, app infrastructure cost |
+| in_app | revenue × 0.35 | ~2.9x | App development + delivery cost |
+| paid_social | revenue × 0.45 | ~2.2x | Media buy + creative production |
+| display | revenue × 0.60 | ~1.7x | Broad reach, low attribution |
+| paid_search | revenue × 0.40 | ~2.5x | CPC-based, high intent |
+| video | revenue × 0.55 | ~1.8x | Production + media cost |
+
+**Fallback — Per-unit cost** (only when send/impression volumes are realistic — 50K+ events):
+
+| Channel | Unit cost | Formula |
+|---|---|---|
+| email | $0.01/send | sends × 0.01 |
+| sms | $0.04/send | sends × 0.04 |
+| push | $0.005/send | sends × 0.005 |
+| in_app | $0.003/impression | sends × 0.003 |
+| paid_social | $7 CPM | impressions / 1000 × 7 |
+| paid_search | $1.50 CPC | clicks × 1.50 |
+
+**Decision rule**: Compute spend both ways. If per-unit spend is less than 5% of revenue, use revenue-based ratio instead (the per-unit model is underestimating true campaign cost).
+
+Always mark estimated spend with `(est.)` in the insight text.
+
+### Insight Generation
+
+For each channel, generate ONE sentence following this pattern:
+- "{Channel} drives {role} with {ROAS}x ROAS. {Top finding from data — e.g. best campaign, best segment, or notable metric}."
+
+## Step 4 — Journey Simulation (5 seconds)
+
+Deterministic funnel math — no LLM reasoning needed. Use these formulas:
+
+**Inputs**: segment sizes (from customer query or `tdx sg list` if available), AOV (from purchase summary query)
+
+**Generate 3 journey cards** from the customer data:
+1. **Lapsed Customer Reactivation** — customers with high days_since_last_purchase
+2. **High-Value Cross-Sell** — top-tier loyalty customers
+3. **New Customer Onboarding** — recent first-time buyers
+
+For each journey card, apply these multipliers to the entry segment size:
+
+```
+Stage 1 Active    = segmentSize × 0.70
+Stage 1 Converted = segmentSize × 0.09
+Stage 2 Escalated = (Stage1Active - Stage1Converted) × 0.55
+Stage 2 Converted = segmentSize × 0.045
+Stage 3 Escalated = (Stage2Esc - Stage2Conv) × 0.50
+Stage 3 Converted = segmentSize × 0.012
+Total Converted   = S1Conv + S2Conv + S3Conv
+Overall Conv Rate = TotalConverted / segmentSize × 100
+
+Stage 1 ROAS = 8.0 + (random variation ±1)
+Stage 2 ROAS = Stage1ROAS × 0.45
+Stage 3 ROAS = Stage1ROAS × 0.25
+
+Stage 1 Revenue = TotalConverted × AOV × 0.58
+Stage 2 Revenue = TotalConverted × AOV × 0.32
+Stage 3 Revenue = TotalConverted × AOV × 0.10
+```
+
+**Cross-Journey Intelligence** (hardcoded ratios):
+```
+stage1Coverage = 95.2
+blendedRoas = 9.4
+stage3RescueValue = sum of all Stage 3 revenue
+purchaseWindowGap = { avgDaysToRepurchase: 72, journeyWindow: 19 }
+```
+
+**Optimization signals** — use the 3 signals from the template with revenue estimates derived from actual segment sizes × AOV.
+
+Add the simulated data disclaimer at the bottom of the journeys object.
+
+## Step 5 — Render Dashboard (5 seconds)
+
+1. **Read the template**: `Read` the file at `$SKILL_DIR/reference/template.html` (resolved in the Skill Directory Resolution step above).
+2. **Find the DATA injection point**: The template contains this line near the top of the `<script>` block:
+   ```
+   // === DATA INJECTION POINT — replace this object with query results ===
+   const DATA = { ... };
+   ```
+3. **Replace the DATA object**: Substitute everything from `const DATA = {` through the matching `};` with `const DATA = <your shaped JSON>;`
+4. **Write the output file**: Write the modified HTML to `{cwd}/{company}_omnichannel_{YYYYMMDD_HHMM}.html`
+5. **Display it**: Use `open_file` to render the HTML in the artifact panel. If `open_file` is not available, output the file path to the user.
+
+### File Naming
+
+Always unique: `{company}_omnichannel_{YYYYMMDD_HHMM}.html`
+Derive company from database name: strip `_demo`, `_prod`, `_dev`, `_staging`, underscores → spaces, title case.
+Example: `northstar_home_living_demo` → `northstar_home_living` → `Northstar Home Living` → `northstar_home_living_omnichannel_20261006_1430.html`
+
+## Step 6 — Summary and Recommendations
+
+After rendering, provide a brief text summary:
+
+### Summary (2-3 sentences)
+Key findings: best channel by ROAS, total revenue, notable patterns.
+
+### Top 3 Recommendations
+Actionable next steps based on the data:
+1. Increase spend on top ROAS channel/segment
+2. Optimize or pause lowest performers
+3. Journey-specific recommendation (extend window, increase reach, etc.)
+
+---
+
+## Benchmarks Reference
+
+| Metric | Good | Suspicious |
+|---|---|---|
+| E-commerce ROAS | 4-5x | Below 1x |
+| SaaS ROAS | 3-4x | Below 1x |
+| Display CTR | 0.10-0.40% | Above 1% (not real display) |
+| Social CTR | 1-5% | Above 10% |
+| Email Open Rate | 15-35% | Above 60% (bot opens) |
+| SMS Open Rate | 20-45% | Above 80% |
+| Search CVR | 1-5% | Above 15% |
+
+## Query Rules
+
+- Always fully qualify table names: `<database>.<table>`
+- Use `--limit 200 --json` for machine-readable output
+- Use `--output <file>` to save results for parallel processing
+- Do NOT start with top-level `WITH` — use nested subqueries
+- For Trino time filtering: use `td_interval(time, '-30d/now')` for partition pruning

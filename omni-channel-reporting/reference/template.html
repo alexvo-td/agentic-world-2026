@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omni-Channel Marketing Performance Dashboard</title>
+<style>
+:root {
+  /* Treasure AI Brand — Light Mode Only */
+  --bg: #F4F5F7; --surface: #FFFFFF; --surface-hover: #F0F0F5; --border: #E0E1E6;
+  --text: #1A1A2E; --muted: #5A5B6A; --dim: #8E8FA0;
+  --primary: #494FFF; --primary-med: #8753FF; --primary-light: rgba(73,79,255,0.10); --primary-dark: #3338CC;
+  --secondary2: #C466D4;
+  --coral: #EE2328; --teal: #494FFF; --amber: #F69068; --purple: #8753FF;
+  --green: #9DCC4C; --pink: #C466D4;
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+.container { max-width: 1400px; margin: 0 auto; padding: 0 24px 48px; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #494FFF 0%, #8753FF 50%, #C466D4 100%); padding: 28px 32px; color: #fff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.header-left p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 12px; font-size: 12px; opacity: 0.85; }
+
+/* Tabs */
+.tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin: 0 0 24px; overflow-x: auto; background: var(--surface); }
+.tab-btn { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.15s; }
+.tab-btn:hover { color: var(--text); background: var(--surface-hover); }
+.tab-btn.active { color: var(--primary-med); border-bottom-color: var(--primary); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* KPI Pills */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.kpi-pill { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; text-align: center; transition: background 0.15s; }
+.kpi-pill:hover { background: var(--surface-hover); }
+.kpi-pill .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+.kpi-pill .kpi-value { font-size: 22px; font-weight: 700; color: var(--text); }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; transition: background 0.15s; }
+.card:hover { background: var(--surface-hover); }
+.card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+.card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+.card-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+
+/* Channel card (clickable) */
+.channel-card { cursor: pointer; position: relative; overflow: hidden; }
+.channel-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+.channel-card .ch-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.channel-card .ch-name { font-size: 15px; font-weight: 600; }
+.channel-card .ch-role { font-size: 10px; padding: 3px 8px; border-radius: 20px; background: var(--surface-hover); color: var(--muted); }
+.channel-card .ch-roas { font-size: 28px; font-weight: 700; }
+.channel-card .ch-meta { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* Tables */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.data-table tr:hover td { background: var(--surface-hover); }
+
+/* Heatmap */
+.heatmap-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.heatmap-table th { padding: 10px 14px; text-align: center; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+.heatmap-table th:first-child { text-align: left; }
+.heatmap-table td { padding: 14px; text-align: center; font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--border); }
+.heatmap-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
+
+/* Insight */
+.insight-card { background: var(--surface); border: 1px solid var(--primary); border-left: 4px solid var(--primary); border-radius: var(--radius); padding: 16px 20px; margin-top: 16px; }
+.insight-card .insight-label { font-size: 11px; text-transform: uppercase; color: var(--primary-med); letter-spacing: 0.5px; margin-bottom: 4px; }
+
+/* Callout cards */
+.callout-best { border-color: var(--green); border-left: 4px solid var(--green); }
+.callout-worst { border-color: var(--coral); border-left: 4px solid var(--coral); }
+.callout-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.callout-best .callout-label { color: #6BA52E; }
+.callout-worst .callout-label { color: var(--coral); }
+
+/* Journey funnel */
+.funnel-wrap { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin: 16px 0; }
+.funnel-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.funnel-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 8px; transition: height 0.3s; }
+.funnel-label { font-size: 10px; color: var(--muted); margin-top: 4px; text-align: center; }
+.funnel-count { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+
+/* Priority badges */
+.badge { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 600; display: inline-block; }
+.badge-high { background: rgba(238,35,40,0.12); color: var(--coral); }
+.badge-medium { background: rgba(246,144,104,0.15); color: var(--amber); }
+.badge-low { background: rgba(157,204,76,0.15); color: var(--green); }
+.badge-channel { background: rgba(73,79,255,0.10); color: var(--primary); font-size: 10px; padding: 3px 10px; border-radius: 20px; }
+
+/* Journey stage table */
+.stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+
+/* SVG */
+svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+/* Disclaimer */
+.disclaimer { font-style: italic; color: var(--dim); font-size: 12px; margin-top: 24px; padding: 12px 16px; border: 1px dashed var(--border); border-radius: 8px; }
+
+/* Section titles */
+.section-title { font-size: 16px; font-weight: 600; margin: 24px 0 12px; color: var(--text); }
+
+/* Optimization cards */
+.opt-card { position: relative; padding-left: 12px; }
+.opt-card::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; border-radius: 4px; }
+.opt-high::before { background: var(--coral); }
+.opt-medium::before { background: var(--amber); }
+.opt-low::before { background: var(--green); }
+.opt-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.opt-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.opt-revenue { font-size: 13px; font-weight: 600; color: #6BA52E; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// === DATA INJECTION POINT — replace this object with query results ===
+const DATA = {
+  meta: {
+    company: "Northstar Home Living",
+    database: "northstar_home_living_demo",
+    generatedAt: "2026-10-06",
+    dataRange: { from: "2026-08-13", to: "2026-09-15" }
+  },
+  kpis: {
+    totalSpend: 185000,
+    totalRevenue: 460831,
+    avgRoas: 2.49,
+    activeCampaigns: 8,
+    totalCustomers: 10000,
+    avgConvRate: 3.2
+  },
+  channels: [
+    {
+      name: "email", label: "Email", role: "Retention", color: "#494FFF",
+      spend: 32000, revenue: 110509, roas: 3.45,
+      nativeKpis: [
+        { label: "Open Rate", value: 28.5, format: "%" },
+        { label: "Click Rate", value: 4.2, format: "%" },
+        { label: "Conv Rate", value: 2.8, format: "%" }
+      ],
+      campaigns: [
+        { name: "Loyalty Points Reminder", segment: "Gold", revenue: 50736, roas: 3.17, metrics: [268, 28.5, 4.2, 2.8] },
+        { name: "Storage and Organization Ideas", segment: "Silver", revenue: 59773, roas: 3.73, metrics: [301, 32.1, 5.1, 3.2] }
+      ],
+      columns: ["Campaign", "Segment", "Revenue", "ROAS", "Conversions", "Open Rate", "Click Rate", "Conv Rate"],
+      columnFormats: ["", "", "$", "x", "", "%", "%", "%"],
+      roasBySegment: [
+        { segment: "Gold", value: 4.2 }, { segment: "Silver", value: 3.8 },
+        { segment: "Platinum", value: 3.1 }, { segment: "None", value: 2.5 }
+      ],
+      insight: "Email drives strong retention with 3.45x ROAS. Gold tier over-indexes at 4.2x — consider lifecycle trigger expansion."
+    },
+    {
+      name: "sms", label: "SMS", role: "Retention / Rescue", color: "#8753FF",
+      spend: 38000, revenue: 113168, roas: 2.98,
+      nativeKpis: [
+        { label: "Total Sends", value: 2500, format: "#" },
+        { label: "Open Rate", value: 35.2, format: "%" },
+        { label: "Click Rate", value: 6.1, format: "%" }
+      ],
+      campaigns: [
+        { name: "Home Decor Back in Stock", segment: "Platinum", revenue: 52124, roas: 2.74, metrics: [268, 33.0, 5.8, 2.1] },
+        { name: "Spring Refresh - Accent Furniture", segment: "Silver", revenue: 61044, roas: 3.21, metrics: [301, 37.4, 6.4, 2.4] }
+      ],
+      columns: ["Campaign", "Segment", "Revenue", "ROAS", "Conversions", "Sends", "Open Rate", "Click Rate"],
+      columnFormats: ["", "", "$", "x", "", "#", "%", "%"],
+      roasBySegment: [
+        { segment: "Gold", value: 3.8 }, { segment: "Silver", value: 3.2 },
+        { segment: "Platinum", value: 2.6 }, { segment: "None", value: 2.1 }
+      ],
+      insight: "SMS shows highest open rates at 35.2%. Spring Refresh campaign outperforms — test urgency messaging for back-in-stock alerts."
+    },
+    {
+      name: "push", label: "Push", role: "Re-engagement", color: "#C466D4",
+      spend: 52000, revenue: 118610, roas: 2.28,
+      nativeKpis: [
+        { label: "Total Sends", value: 2500, format: "#" },
+        { label: "Open Rate", value: 22.8, format: "%" },
+        { label: "Click Rate", value: 3.6, format: "%" }
+      ],
+      campaigns: [
+        { name: "Craft Room Organization", segment: "None", revenue: 62798, roas: 2.41, metrics: [301, 24.1, 3.9, 2.4] },
+        { name: "Winback - Your Next Project", segment: "Gold", revenue: 55812, roas: 2.14, metrics: [276, 21.5, 3.3, 2.2] }
+      ],
+      columns: ["Campaign", "Segment", "Revenue", "ROAS", "Conversions", "Sends", "Open Rate", "Click Rate"],
+      columnFormats: ["", "", "$", "x", "", "#", "%", "%"],
+      roasBySegment: [
+        { segment: "Gold", value: 2.8 }, { segment: "Silver", value: 2.4 },
+        { segment: "Platinum", value: 2.0 }, { segment: "None", value: 1.7 }
+      ],
+      insight: "Push notification ROAS trails other owned channels. Craft Room Organization outperforms Winback — content-led push beats promotional."
+    },
+    {
+      name: "in_app", label: "In-App", role: "Engagement", color: "#9DCC4C",
+      spend: 63000, revenue: 118544, roas: 1.88,
+      nativeKpis: [
+        { label: "Total Impressions", value: 5000, format: "#" },
+        { label: "Open Rate", value: 42.5, format: "%" },
+        { label: "Click Rate", value: 8.2, format: "%" }
+      ],
+      campaigns: [
+        { name: "Holiday Entertaining Preview", segment: "Platinum", revenue: 62916, roas: 2.0, metrics: [301, 45.2, 8.8, 2.4] },
+        { name: "Seasonal Project Inspiration", segment: "None", revenue: 55628, roas: 1.76, metrics: [276, 39.8, 7.6, 2.2] }
+      ],
+      columns: ["Campaign", "Segment", "Revenue", "ROAS", "Conversions", "Impressions", "Open Rate", "Click Rate"],
+      columnFormats: ["", "", "$", "x", "", "#", "%", "%"],
+      roasBySegment: [
+        { segment: "Gold", value: 2.4 }, { segment: "Silver", value: 2.0 },
+        { segment: "Platinum", value: 1.6 }, { segment: "None", value: 1.3 }
+      ],
+      insight: "In-app messages show highest engagement rates (42.5% open, 8.2% CTR) but lowest ROAS. Holiday Entertaining Preview shows seasonal content lifts engagement."
+    }
+  ],
+  segmentHeatmap: [
+    { segment: "Gold", values: { email: 4.2, sms: 3.8, push: 2.8, in_app: 2.4 } },
+    { segment: "Silver", values: { email: 3.8, sms: 3.2, push: 2.4, in_app: 2.0 } },
+    { segment: "Platinum", values: { email: 3.1, sms: 2.6, push: 2.0, in_app: 1.6 } },
+    { segment: "None", values: { email: 2.5, sms: 2.1, push: 1.7, in_app: 1.3 } }
+  ],
+  journeys: {
+    kpis: {
+      totalEnrolled: 4500,
+      goalAchieved: 540,
+      goalAchievedPct: 12.0,
+      revenueAttributed: 92880,
+      stage1Conversion: 9.5,
+      stage2Escalation: 58,
+      avgDaysToConvert: 8.4
+    },
+    cards: [
+      {
+        name: "Lapsed Customer Reactivation",
+        segment: "Lapsed 90+ Days",
+        segmentSize: 2100,
+        overallConversion: 12.5,
+        channelBadge: "Email + App → Social/Search → VIP SMS",
+        funnel: [
+          { stage: "Entered", count: 2100, pct: 100 },
+          { stage: "Stage 1 Active", count: 1470, pct: 70 },
+          { stage: "Stage 2 Escalated", count: 756, pct: 36 },
+          { stage: "Stage 3 Escalated", count: 340, pct: 16.2 },
+          { stage: "Converted", count: 263, pct: 12.5 }
+        ],
+        stageBreakdown: [
+          { stage: "Stage 1: Email + App", entered: 1470, converted: 189, rate: 9.0, roas: 8.2, channel: "Email + App Push" },
+          { stage: "Stage 2: Social + Search", entered: 756, converted: 50, rate: 3.9, roas: 3.8, channel: "Meta + Google" },
+          { stage: "Stage 3: VIP SMS", entered: 340, converted: 24, rate: 1.1, roas: 2.1, channel: "SMS Exclusive" }
+        ],
+        decisions: [
+          { name: "Has App / Mobile Consent", qualifyPct: 35, qualifyConv: 15.2, fallbackConv: 7.1 },
+          { name: "High LTV / Propensity", qualifyPct: 40, qualifyConv: 18.0, fallbackConv: 9.5 }
+        ],
+        revenueByStage: [
+          { stage: "Stage 1", revenue: 36288, pct: 60 },
+          { stage: "Stage 2", revenue: 18144, pct: 30 },
+          { stage: "Stage 3", revenue: 6048, pct: 10 }
+        ]
+      },
+      {
+        name: "High-Value Cross-Sell",
+        segment: "Gold + Platinum, 1 Category",
+        segmentSize: 1500,
+        overallConversion: 14.2,
+        channelBadge: "Email + App → Social/Search → VIP SMS",
+        funnel: [
+          { stage: "Entered", count: 1500, pct: 100 },
+          { stage: "Stage 1 Active", count: 1080, pct: 72 },
+          { stage: "Stage 2 Escalated", count: 540, pct: 36 },
+          { stage: "Stage 3 Escalated", count: 230, pct: 15.3 },
+          { stage: "Converted", count: 213, pct: 14.2 }
+        ],
+        stageBreakdown: [
+          { stage: "Stage 1: Email + App", entered: 1080, converted: 151, rate: 10.1, roas: 9.1, channel: "Email + App Push" },
+          { stage: "Stage 2: Social + Search", entered: 540, converted: 43, rate: 4.3, roas: 4.2, channel: "Meta + Google" },
+          { stage: "Stage 3: VIP SMS", entered: 230, converted: 19, rate: 1.3, roas: 2.4, channel: "SMS Exclusive" }
+        ],
+        decisions: [
+          { name: "Has App / Mobile Consent", qualifyPct: 38, qualifyConv: 16.5, fallbackConv: 7.8 },
+          { name: "High LTV / Propensity", qualifyPct: 42, qualifyConv: 19.2, fallbackConv: 10.1 }
+        ],
+        revenueByStage: [
+          { stage: "Stage 1", revenue: 25920, pct: 58 },
+          { stage: "Stage 2", revenue: 14040, pct: 31 },
+          { stage: "Stage 3", revenue: 4860, pct: 11 }
+        ]
+      },
+      {
+        name: "New Customer Onboarding",
+        segment: "First Purchase < 30 Days",
+        segmentSize: 900,
+        overallConversion: 8.9,
+        channelBadge: "Email + App → Social/Search → VIP SMS",
+        funnel: [
+          { stage: "Entered", count: 900, pct: 100 },
+          { stage: "Stage 1 Active", count: 612, pct: 68 },
+          { stage: "Stage 2 Escalated", count: 306, pct: 34 },
+          { stage: "Stage 3 Escalated", count: 138, pct: 15.3 },
+          { stage: "Converted", count: 80, pct: 8.9 }
+        ],
+        stageBreakdown: [
+          { stage: "Stage 1: Email + App", entered: 612, converted: 49, rate: 5.4, roas: 6.8, channel: "Email + App Push" },
+          { stage: "Stage 2: Social + Search", entered: 306, converted: 21, rate: 2.3, roas: 2.9, channel: "Meta + Google" },
+          { stage: "Stage 3: VIP SMS", entered: 138, converted: 10, rate: 1.1, roas: 1.8, channel: "SMS Exclusive" }
+        ],
+        decisions: [
+          { name: "Has App / Mobile Consent", qualifyPct: 28, qualifyConv: 12.1, fallbackConv: 5.4 },
+          { name: "High LTV / Propensity", qualifyPct: 32, qualifyConv: 14.5, fallbackConv: 7.2 }
+        ],
+        revenueByStage: [
+          { stage: "Stage 1", revenue: 8424, pct: 55 },
+          { stage: "Stage 2", revenue: 5320, pct: 35 },
+          { stage: "Stage 3", revenue: 1520, pct: 10 }
+        ]
+      }
+    ],
+    crossJourney: {
+      stage1Coverage: 95.2,
+      blendedRoas: 9.4,
+      stage3RescueValue: 12428,
+      purchaseWindowGap: { avgDaysToRepurchase: 72, journeyWindow: 19 }
+    },
+    optimizations: [
+      {
+        title: "Extend journey window past Stage 3",
+        estRevenue: 42000,
+        description: "The 3-stage journey spans ~19 days but the natural repeat purchase window is 72 days. A Stage 4 long-tail nurture at day 30 + 60 could recover 4-6% of non-converters.",
+        priority: "high"
+      },
+      {
+        title: "Increase Stage 1 App Push reach",
+        estRevenue: 28000,
+        description: "Only 28-38% of customers qualify for App Push branch. Growing app install rate by 10pp lifts Stage 1 conversion by ~2pp at zero incremental media cost.",
+        priority: "high"
+      },
+      {
+        title: "Lower Stage 2 LTV threshold for Search routing",
+        estRevenue: 18000,
+        description: "Currently only top 32-42% of customers get Search retargeting. Including the next LTV tier adds ~15-20% more customers to the higher-converting Search branch.",
+        priority: "medium"
+      }
+    ]
+  }
+};
+
+// ── Formatting helpers ──
+function fmtCurrency(v) {
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return '$' + (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'K';
+  return '$' + v.toLocaleString();
+}
+function fmtNum(v) { return v.toLocaleString(); }
+function fmtPct(v) { return v.toFixed(v % 1 === 0 ? 1 : 2) + '%'; }
+function fmtRoas(v) { return v.toFixed(2) + 'x'; }
+function fmtVal(v, fmt) {
+  if (fmt === '$') return fmtCurrency(v);
+  if (fmt === '%') return fmtPct(v);
+  if (fmt === 'x') return fmtRoas(v);
+  if (fmt === '#') return fmtNum(v);
+  return String(v);
+}
+function el(tag, attrs, ...children) {
+  const e = document.createElement(tag);
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => {
+    if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'className') e.className = v;
+    else if (k === 'innerHTML') e.innerHTML = v;
+    else e.setAttribute(k, v);
+  });
+  children.flat().forEach(c => { if (c != null) e.append(typeof c === 'string' ? c : c); });
+  return e;
+}
+function svgEl(tag, attrs) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+  return e;
+}
+
+// ── Reusable components ──
+function buildKpiRow(items) {
+  const row = el('div', { className: 'kpi-row' });
+  items.forEach(({ label, value }) => {
+    row.append(el('div', { className: 'kpi-pill' },
+      el('div', { className: 'kpi-label' }, label),
+      el('div', { className: 'kpi-value' }, value)
+    ));
+  });
+  return row;
+}
+
+function buildTable(columns, formats, rows) {
+  const t = el('table', { className: 'data-table' });
+  const thead = el('thead'); const tr = el('tr');
+  columns.forEach(c => tr.append(el('th', null, c)));
+  thead.append(tr); t.append(thead);
+  const tbody = el('tbody');
+  rows.forEach(cells => {
+    const r = el('tr');
+    cells.forEach((v, i) => {
+      const fmt = formats[i] || '';
+      r.append(el('td', null, typeof v === 'number' ? fmtVal(v, fmt) : String(v)));
+    });
+    tbody.append(r);
+  });
+  t.append(tbody); return t;
+}
+
+function buildBarChart(items, { width = 600, barH = 28, gap = 10, showValues = true, maxVal = null } = {}) {
+  const max = maxVal || Math.max(...items.map(d => d.value));
+  const h = items.length * (barH + gap) + 20;
+  const labelW = 90; const chartW = width - labelW - 80;
+  const svg = svgEl('svg', { width, height: h, viewBox: `0 0 ${width} ${h}` });
+  items.forEach((d, i) => {
+    const y = i * (barH + gap) + 10;
+    const bw = max > 0 ? (d.value / max) * chartW : 0;
+    svg.append(svgEl('text', { x: labelW - 8, y: y + barH / 2 + 4, fill: 'var(--muted)', 'font-size': '12', 'text-anchor': 'end' }));
+    svg.lastChild.textContent = d.label;
+    const rect = svgEl('rect', { x: labelW, y, width: Math.max(bw, 2), height: barH, rx: 4, fill: d.color || 'var(--primary)' });
+    svg.append(rect);
+    if (showValues) {
+      const txt = svgEl('text', { x: labelW + bw + 8, y: y + barH / 2 + 4, fill: 'var(--text)', 'font-size': '12', 'font-weight': '600' });
+      txt.textContent = d.formatted || d.value;
+      svg.append(txt);
+    }
+  });
+  return svg;
+}
+
+function buildGroupedBarChart(groups, { width = 700, barH = 20, gap = 16 } = {}) {
+  const max = Math.max(...groups.flatMap(g => [g.v1, g.v2]));
+  const h = groups.length * (barH * 2 + gap + 10) + 40;
+  const labelW = 80; const chartW = width - labelW - 100;
+  const svg = svgEl('svg', { width, height: h, viewBox: `0 0 ${width} ${h}` });
+  groups.forEach((g, i) => {
+    const baseY = i * (barH * 2 + gap + 10) + 10;
+    // Label
+    const lbl = svgEl('text', { x: labelW - 8, y: baseY + barH + 2, fill: 'var(--muted)', 'font-size': '12', 'text-anchor': 'end' });
+    lbl.textContent = g.label;
+    svg.append(lbl);
+    // Spend bar
+    const w1 = max > 0 ? (g.v1 / max) * chartW : 0;
+    svg.append(svgEl('rect', { x: labelW, y: baseY, width: Math.max(w1, 2), height: barH, rx: 3, fill: 'var(--dim)' }));
+    const t1 = svgEl('text', { x: labelW + w1 + 6, y: baseY + barH / 2 + 4, fill: 'var(--muted)', 'font-size': '11' });
+    t1.textContent = fmtCurrency(g.v1); svg.append(t1);
+    // Revenue bar
+    const w2 = max > 0 ? (g.v2 / max) * chartW : 0;
+    svg.append(svgEl('rect', { x: labelW, y: baseY + barH + 3, width: Math.max(w2, 2), height: barH, rx: 3, fill: g.color }));
+    const t2 = svgEl('text', { x: labelW + w2 + 6, y: baseY + barH + 3 + barH / 2 + 4, fill: 'var(--text)', 'font-size': '11', 'font-weight': '600' });
+    t2.textContent = fmtCurrency(g.v2); svg.append(t2);
+  });
+  // Legend
+  const ly = h - 16;
+  svg.append(svgEl('rect', { x: labelW, y: ly, width: 12, height: 12, rx: 2, fill: 'var(--dim)' }));
+  const lt1 = svgEl('text', { x: labelW + 16, y: ly + 10, fill: 'var(--muted)', 'font-size': '11' });
+  lt1.textContent = 'Spend'; svg.append(lt1);
+  svg.append(svgEl('rect', { x: labelW + 70, y: ly, width: 12, height: 12, rx: 2, fill: 'var(--primary-med)' }));
+  const lt2 = svgEl('text', { x: labelW + 86, y: ly + 10, fill: 'var(--muted)', 'font-size': '11' });
+  lt2.textContent = 'Revenue'; svg.append(lt2);
+  return svg;
+}
+
+function buildStackedBar(items, { width = 400, height = 28 } = {}) {
+  const total = items.reduce((s, d) => s + d.pct, 0);
+  const svg = svgEl('svg', { width, height: height + 20, viewBox: `0 0 ${width} ${height + 20}` });
+  let x = 0;
+  const colors = ['var(--primary)', 'var(--purple)', 'var(--pink)'];
+  items.forEach((d, i) => {
+    const w = (d.pct / total) * width;
+    svg.append(svgEl('rect', { x, y: 0, width: Math.max(w, 1), height, rx: i === 0 ? 4 : 0, fill: colors[i % colors.length] }));
+    if (w > 30) {
+      const t = svgEl('text', { x: x + w / 2, y: height / 2 + 4, fill: '#fff', 'font-size': '10', 'text-anchor': 'middle', 'font-weight': '600' });
+      t.textContent = d.stage + ' ' + d.pct + '%'; svg.append(t);
+    }
+    x += w;
+  });
+  return svg;
+}
+
+function buildFunnel(steps, color) {
+  const wrap = el('div', { className: 'funnel-wrap' });
+  const maxCount = steps[0].count;
+  steps.forEach(s => {
+    const h = Math.max((s.count / maxCount) * 100, 10);
+    const step = el('div', { className: 'funnel-step' });
+    step.append(el('div', { className: 'funnel-count' }, fmtNum(s.count)));
+    const bar = el('div', { className: 'funnel-bar', style: { height: h + 'px', background: color || 'var(--primary)' } });
+    step.append(bar);
+    step.append(el('div', { className: 'funnel-label', innerHTML: s.stage + '<br>' + s.pct + '%' }));
+    wrap.append(step);
+  });
+  return wrap;
+}
+
+// ── Tab system ──
+let currentTab = 'overview';
+function switchTab(id) {
+  currentTab = id;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
+}
+
+// ── Render functions ──
+function renderHeader() {
+  const { meta } = DATA;
+  const header = el('div', { className: 'header' });
+  const left = el('div', { className: 'header-left' });
+  left.append(el('h1', null, meta.company + ' — Omni-Channel Performance'));
+  left.append(el('p', null, 'Database: ' + meta.database + '  ·  ' + meta.dataRange.from + ' to ' + meta.dataRange.to));
+  header.append(left);
+  const right = el('div', { className: 'header-right' });
+  right.append(el('span', null, 'Generated: ' + meta.generatedAt));
+  header.append(right);
+  return header;
+}
+
+function renderTabs() {
+  const bar = el('div', { className: 'tab-bar' });
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'segments', label: 'Segments' },
+    ...DATA.channels.map(ch => ({ id: 'ch-' + ch.name, label: ch.label })),
+    { id: 'journeys', label: 'Journey Performance' }
+  ];
+  tabs.forEach(t => {
+    const btn = el('button', { className: 'tab-btn' + (t.id === 'overview' ? ' active' : ''), 'data-tab': t.id, onClick: () => switchTab(t.id) }, t.label);
+    bar.append(btn);
+  });
+  return bar;
+}
+
+function renderOverview() {
+  const panel = el('div', { className: 'tab-panel active', id: 'tab-overview' });
+  const { kpis } = DATA;
+  // KPI Row
+  panel.append(buildKpiRow([
+    { label: 'Total Spend', value: fmtCurrency(kpis.totalSpend) },
+    { label: 'Total Revenue', value: fmtCurrency(kpis.totalRevenue) },
+    { label: 'Avg ROAS', value: fmtRoas(kpis.avgRoas) },
+    { label: 'Active Campaigns', value: fmtNum(kpis.activeCampaigns) },
+    { label: 'Total Customers', value: fmtNum(kpis.totalCustomers) },
+    { label: 'Avg Conv Rate', value: fmtPct(kpis.avgConvRate) }
+  ]));
+  // Channel breakdown chart
+  const sorted = [...DATA.channels].sort((a, b) => b.revenue - a.revenue);
+  const chartCard = el('div', { className: 'card' });
+  chartCard.append(el('h3', null, 'Channel Breakdown: Spend vs Revenue'));
+  chartCard.append(buildGroupedBarChart(sorted.map(ch => ({
+    label: ch.label, v1: ch.spend, v2: ch.revenue, color: ch.color
+  }))));
+  panel.append(chartCard);
+  // Channel grid
+  panel.append(el('h3', { className: 'section-title' }, 'Channel Overview'));
+  const grid = el('div', { className: 'card-grid' });
+  sorted.forEach(ch => {
+    const card = el('div', { className: 'card channel-card', onClick: () => switchTab('ch-' + ch.name) });
+    card.style.borderLeft = '4px solid ' + ch.color;
+    const hdr = el('div', { className: 'ch-header' });
+    hdr.append(el('span', { className: 'ch-name' }, ch.label));
+    hdr.append(el('span', { className: 'ch-role' }, ch.role));
+    card.append(hdr);
+    card.append(el('div', { className: 'ch-roas', style: { color: ch.color } }, fmtRoas(ch.roas)));
+    const meta = el('div', { className: 'ch-meta' });
+    meta.append(el('span', null, 'Rev: ' + fmtCurrency(ch.revenue)));
+    meta.append(el('span', null, 'Spend: ' + fmtCurrency(ch.spend)));
+    card.append(meta);
+    grid.append(card);
+  });
+  panel.append(grid);
+  return panel;
+}
+
+function renderSegments() {
+  const panel = el('div', { className: 'tab-panel', id: 'tab-segments' });
+  panel.append(el('h3', { className: 'section-title' }, 'ROAS by Segment × Channel'));
+  // Heatmap
+  const card = el('div', { className: 'card' });
+  const table = el('table', { className: 'heatmap-table' });
+  const thead = el('thead'); const tr = el('tr');
+  tr.append(el('th', null, 'Segment'));
+  DATA.channels.forEach(ch => tr.append(el('th', null, ch.label)));
+  thead.append(tr); table.append(thead);
+  const allVals = DATA.segmentHeatmap.flatMap(r => Object.values(r.values));
+  const minV = Math.min(...allVals); const maxV = Math.max(...allVals);
+  let best = { seg: '', ch: '', val: 0 }; let worst = { seg: '', ch: '', val: Infinity };
+  const tbody = el('tbody');
+  DATA.segmentHeatmap.forEach(row => {
+    const r = el('tr');
+    r.append(el('td', null, row.segment));
+    DATA.channels.forEach(ch => {
+      const v = row.values[ch.name] || 0;
+      if (v > best.val) best = { seg: row.segment, ch: ch.label, val: v };
+      if (v < worst.val) worst = { seg: row.segment, ch: ch.label, val: v };
+      const norm = maxV > minV ? (v - minV) / (maxV - minV) : 0.5;
+      const r_ = Math.round(255 * (1 - norm) * 0.7);
+      const g_ = Math.round(255 * norm * 0.7);
+      const bg = `rgba(${r_}, ${g_}, 80, 0.25)`;
+      const td = el('td', { style: { background: bg } }, fmtRoas(v));
+      r.append(td);
+    });
+    tbody.append(r);
+  });
+  table.append(tbody); card.append(table); panel.append(card);
+  // Best / Worst
+  const callouts = el('div', { className: 'card-grid' });
+  const bestCard = el('div', { className: 'card callout-best' });
+  bestCard.append(el('div', { className: 'callout-label' }, 'Best Performer'));
+  bestCard.append(el('div', { style: { fontSize: '20px', fontWeight: '700' } }, fmtRoas(best.val)));
+  bestCard.append(el('div', { style: { color: 'var(--muted)', fontSize: '13px' } }, best.seg + ' × ' + best.ch));
+  callouts.append(bestCard);
+  const worstCard = el('div', { className: 'card callout-worst' });
+  worstCard.append(el('div', { className: 'callout-label' }, 'Needs Attention'));
+  worstCard.append(el('div', { style: { fontSize: '20px', fontWeight: '700' } }, fmtRoas(worst.val)));
+  worstCard.append(el('div', { style: { color: 'var(--muted)', fontSize: '13px' } }, worst.seg + ' × ' + worst.ch));
+  callouts.append(worstCard);
+  panel.append(callouts);
+  return panel;
+}
+
+function renderChannelTab(ch) {
+  const panel = el('div', { className: 'tab-panel', id: 'tab-ch-' + ch.name });
+  // KPIs
+  panel.append(buildKpiRow([
+    { label: 'Revenue', value: fmtCurrency(ch.revenue) },
+    { label: 'Spend', value: fmtCurrency(ch.spend) },
+    { label: 'ROAS', value: fmtRoas(ch.roas) },
+    ...ch.nativeKpis.map(k => ({ label: k.label, value: fmtVal(k.value, k.format) }))
+  ]));
+  // Campaign table
+  const tableCard = el('div', { className: 'card' });
+  tableCard.append(el('h3', null, ch.label + ' Campaigns'));
+  const rows = ch.campaigns.map(c => [c.name, c.segment, c.revenue, c.roas, ...c.metrics]);
+  tableCard.append(buildTable(ch.columns, ch.columnFormats, rows));
+  panel.append(tableCard);
+  // ROAS by Segment bar chart
+  const chartCard = el('div', { className: 'card' });
+  chartCard.append(el('h3', null, 'ROAS by Segment'));
+  chartCard.append(buildBarChart(ch.roasBySegment.map(s => ({
+    label: s.segment, value: s.value, color: ch.color, formatted: fmtRoas(s.value)
+  })), { width: 500, barH: 26 }));
+  panel.append(chartCard);
+  // Insight
+  const ins = el('div', { className: 'insight-card' });
+  ins.append(el('div', { className: 'insight-label' }, 'Insight'));
+  ins.append(el('div', null, ch.insight));
+  panel.append(ins);
+  return panel;
+}
+
+function renderJourneys() {
+  const panel = el('div', { className: 'tab-panel', id: 'tab-journeys' });
+  const { kpis, cards, crossJourney, optimizations } = DATA.journeys;
+  // Summary KPIs
+  panel.append(buildKpiRow([
+    { label: 'Total Enrolled', value: fmtNum(kpis.totalEnrolled) },
+    { label: 'Goal Achieved', value: fmtNum(kpis.goalAchieved) },
+    { label: 'Goal Achieved %', value: fmtPct(kpis.goalAchievedPct) },
+    { label: 'Revenue Attributed', value: fmtCurrency(kpis.revenueAttributed) },
+    { label: 'Stage 1 Conv %', value: fmtPct(kpis.stage1Conversion) },
+    { label: 'Avg Days to Convert', value: kpis.avgDaysToConvert.toFixed(1) }
+  ]));
+  // Per-journey cards
+  cards.forEach(j => {
+    const card = el('div', { className: 'card' });
+    // Header
+    const hdr = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' } });
+    hdr.append(el('div', null,
+      el('h3', { style: { marginBottom: '2px' } }, j.name),
+      el('span', { style: { fontSize: '12px', color: 'var(--muted)' } }, 'Segment: ' + j.segment + ' · ' + fmtNum(j.segmentSize) + ' customers')
+    ));
+    const badges = el('div', { style: { display: 'flex', gap: '8px', alignItems: 'center' } });
+    badges.append(el('span', { className: 'badge badge-high' }, fmtPct(j.overallConversion) + ' Conv'));
+    badges.append(el('span', { className: 'badge badge-channel' }, j.channelBadge));
+    hdr.append(badges);
+    card.append(hdr);
+    // Funnel
+    card.append(el('div', { style: { fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: 'var(--muted)' } }, 'Escalation Funnel'));
+    card.append(buildFunnel(j.funnel, 'var(--primary)'));
+    // Stage breakdown table
+    card.append(el('div', { style: { fontSize: '13px', fontWeight: '600', margin: '16px 0 8px', color: 'var(--muted)' } }, 'Stage Breakdown'));
+    card.append(buildTable(
+      ['Stage', 'Entered', 'Converted', 'Rate', 'ROAS', 'Channel'],
+      ['', '#', '#', '%', 'x', ''],
+      j.stageBreakdown.map(s => [s.stage, s.entered, s.converted, s.rate, s.roas, s.channel])
+    ));
+    // Decision points + Revenue side by side
+    const bottom = el('div', { className: 'stage-grid' });
+    // Decision points
+    const decWrap = el('div');
+    decWrap.append(el('div', { style: { fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: 'var(--muted)' } }, 'Decision Points'));
+    j.decisions.forEach(d => {
+      const dc = el('div', { className: 'card', style: { padding: '12px', marginBottom: '8px' } });
+      dc.append(el('div', { style: { fontWeight: '600', fontSize: '13px', marginBottom: '6px' } }, d.name));
+      const row = el('div', { style: { display: 'flex', gap: '16px', fontSize: '12px' } });
+      row.append(el('div', null,
+        el('span', { style: { color: 'var(--green)' } }, 'Qualify: ' + d.qualifyPct + '% '),
+        el('span', { style: { color: 'var(--muted)' } }, '→ ' + fmtPct(d.qualifyConv) + ' conv')
+      ));
+      row.append(el('div', null,
+        el('span', { style: { color: 'var(--coral)' } }, 'Fallback '),
+        el('span', { style: { color: 'var(--muted)' } }, '→ ' + fmtPct(d.fallbackConv) + ' conv')
+      ));
+      dc.append(row);
+      decWrap.append(dc);
+    });
+    bottom.append(decWrap);
+    // Revenue by stage
+    const revWrap = el('div');
+    revWrap.append(el('div', { style: { fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: 'var(--muted)' } }, 'Revenue by Stage'));
+    revWrap.append(buildStackedBar(j.revenueByStage));
+    j.revenueByStage.forEach(s => {
+      revWrap.append(el('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: '12px', padding: '4px 0', color: 'var(--muted)' } },
+        el('span', null, s.stage),
+        el('span', { style: { fontWeight: '600', color: 'var(--text)' } }, fmtCurrency(s.revenue) + ' (' + s.pct + '%)')
+      ));
+    });
+    bottom.append(revWrap);
+    card.append(bottom);
+    panel.append(card);
+  });
+  // Cross-Journey Intelligence
+  panel.append(el('h3', { className: 'section-title' }, 'Cross-Journey Intelligence'));
+  const cj = crossJourney;
+  panel.append(buildKpiRow([
+    { label: 'Stage 1 Coverage', value: fmtPct(cj.stage1Coverage) },
+    { label: 'Blended ROAS', value: fmtRoas(cj.blendedRoas) },
+    { label: 'Stage 3 Rescue Value', value: fmtCurrency(cj.stage3RescueValue) },
+    { label: 'Purchase Window Gap', value: cj.purchaseWindowGap.avgDaysToRepurchase + 'd repurchase / ' + cj.purchaseWindowGap.journeyWindow + 'd journey' }
+  ]));
+  // Optimization Signals
+  panel.append(el('h3', { className: 'section-title' }, 'Top Optimization Signals'));
+  const optGrid = el('div', { className: 'card-grid-3' });
+  optimizations.forEach(o => {
+    const oc = el('div', { className: 'card opt-card opt-' + o.priority });
+    const hdr2 = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' } });
+    hdr2.append(el('span', { className: 'opt-title' }, o.title));
+    hdr2.append(el('span', { className: 'badge badge-' + o.priority }, o.priority.toUpperCase()));
+    oc.append(hdr2);
+    oc.append(el('div', { className: 'opt-desc' }, o.description));
+    oc.append(el('div', { className: 'opt-revenue' }, 'Est. Revenue: ' + fmtCurrency(o.estRevenue)));
+    optGrid.append(oc);
+  });
+  panel.append(optGrid);
+  // Disclaimer
+  panel.append(el('div', { className: 'disclaimer' }, 'Note: Journey performance data shown above is simulated for demonstration purposes. Actual journey metrics should be sourced from the CDP journey analytics engine with production attribution windows.'));
+  return panel;
+}
+
+// ── Main render ──
+function renderDashboard() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.append(renderHeader());
+  const container = el('div', { className: 'container' });
+  container.append(renderTabs());
+  container.append(renderOverview());
+  container.append(renderSegments());
+  DATA.channels.forEach(ch => container.append(renderChannelTab(ch)));
+  container.append(renderJourneys());
+  app.append(container);
+}
+
+document.addEventListener('DOMContentLoaded', renderDashboard);
+</script>
+</body>
+</html>

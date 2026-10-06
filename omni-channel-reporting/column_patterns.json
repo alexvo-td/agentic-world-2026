@@ -1,0 +1,22 @@
+{
+  "channel":         ["channel", "channel_name", "media_channel", "platform", "marketing_channel"],
+  "spend":           ["spend", "media_spend", "cost", "ad_spend", "total_spend", "budget"],
+  "revenue":         ["revenue", "attributed_revenue", "total_revenue", "sales", "line_net_sales"],
+  "roas":            ["roas", "return_on_ad_spend"],
+  "ctr":             ["ctr", "click_through_rate"],
+  "cpc":             ["cpc", "cost_per_click"],
+  "conversion_rate": ["conversion_rate", "conv_rate", "cvr"],
+  "open_rate":       ["open_rate", "email_open_rate"],
+  "click_rate":      ["click_rate", "email_click_rate"],
+  "campaign":        ["campaign", "campaign_name", "campaign_id"],
+  "segment":         ["segment_name", "segment", "audience", "audience_name", "customer_segment"],
+  "creative":        ["creative_messaging", "creative", "ad_copy", "messaging", "subject_line"],
+  "time_col":        ["month", "date", "period", "event_time", "time"],
+  "customer_id":     ["customer_id", "user_id", "cust_id", "canonical_id"],
+  "event_type":      ["event_type", "action", "activity_type"],
+  "impressions":     ["impressions", "imps", "total_impressions"],
+  "clicks":          ["clicks", "total_clicks"],
+  "sends":           ["sends", "total_sends", "deliveries"],
+  "views":           ["views", "video_views", "completions"],
+  "viewability":     ["viewability", "viewable_rate"]
+}
