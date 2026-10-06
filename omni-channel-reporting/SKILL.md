@@ -1,6 +1,18 @@
 ---
 name: omni-channel-reporting
-description: Use when the user asks for "omni-channel report", "marketing performance dashboard", "channel performance analysis", "ROAS analysis", "CTR analysis", "campaign performance report", "media mix analysis", "marketing dashboard", "channel comparison", or wants to analyze marketing spend, revenue, and performance across channels (email, Facebook, paid search, SMS, display, video, push, in-app). Also trigger on "marketing analytics", "campaign ROI", "segment performance by channel", or "marketing trends".
+action: true
+description: >
+  Use when the user asks for an omnichannel report, omni-channel report,
+  marketing performance dashboard, channel performance analysis,
+  campaign performance report, marketing analytics, or wants to compare
+  performance across marketing channels (email, SMS, push, in-app, paid social,
+  paid search, display, video). Also triggers on: marketing dashboard,
+  channel comparison, ROAS analysis, CTR analysis, media mix analysis,
+  segment performance by channel, campaign ROI, marketing trends,
+  what data is available for analysis, understand our customer base,
+  customer transaction and engagement data, explore campaign data,
+  what channels do we have, analyze marketing data, or any request
+  to build a report from campaign engagement, order, or customer tables.
 ---
 
 # Omni-Channel Reporting — Fast Template Mode
@@ -14,16 +26,11 @@ Locate this skill's directory so you can read bundled files. Run:
 ```bash
 bash -c '
 SKILL="omni-channel-reporting"
-USER_PATH="$HOME/.treasure-work/.claude/skills/$SKILL/SKILL.md"
-if [ -f "$USER_PATH" ]; then
-  echo "SKILL_DIR=$(dirname "$USER_PATH")"
+FOUND=$(find "$HOME/.treasure-work/.claude" "$HOME/.claude" -name "SKILL.md" -path "*/$SKILL/SKILL.md" 2>/dev/null | head -1)
+if [ -n "$FOUND" ]; then
+  echo "SKILL_DIR=$(dirname "$FOUND")"
 else
-  PLUGIN_MATCH=$(compgen -G "$HOME/.treasure-work/.claude/plugins/*/skills/$SKILL/SKILL.md" 2>/dev/null | head -1)
-  if [ -n "$PLUGIN_MATCH" ]; then
-    echo "SKILL_DIR=$(dirname "$PLUGIN_MATCH")"
-  else
-    echo "SKILL_DIR=NOT_FOUND"
-  fi
+  echo "SKILL_DIR=NOT_FOUND"
 fi
 '
 ```
@@ -33,6 +40,22 @@ Store the result as `SKILL_DIR`. All file references below are relative to this 
 - SQL templates: `$SKILL_DIR/sql/*.sql`
 - Column patterns: `$SKILL_DIR/column_patterns.json`
 - Data schema docs: `$SKILL_DIR/reference/data-schema.md`
+- Pre-computed demo data: `$SKILL_DIR/reference/northstar-data.json`
+
+## Demo Fast-Path (check BEFORE running queries)
+
+If the target database is `northstar_home_living_demo`, a pre-computed DATA file exists at
+`$SKILL_DIR/reference/northstar-data.json`. This skips all query and data-shaping steps:
+
+1. Read `$SKILL_DIR/reference/northstar-data.json`
+2. Replace the `"generatedAt": "__TODAY__"` value with today's date (YYYY-MM-DD)
+3. Run 1-2 fast "demo theatrics" queries to show the AI working (optional, ~3s):
+   - `SELECT channel, COUNT(*) as orders, SUM(line_net_sales) as revenue FROM northstar_home_living_demo.order_events GROUP BY channel`
+   - `SELECT purchase_window_status, COUNT(*) FROM northstar_home_living_demo.customer_purchase_summary GROUP BY purchase_window_status`
+4. Skip directly to **Step 5 — Render Dashboard** with the pre-computed DATA
+5. Mention the live query results in the text summary to show freshness
+
+For **any other database**, follow the full Steps 0-5 below.
 
 ## Architecture
 
@@ -41,6 +64,7 @@ SKILL.md                         ← You are here: orchestration instructions
 reference/
   template.html                  ← Complete dashboard (static shell) — inject DATA and render
   data-schema.md                 ← DATA contract documentation
+  northstar-data.json            ← Pre-computed DATA for northstar_home_living_demo (demo fast-path)
 sql/
   channel_summary_preagg.sql     ← For tables with spend/revenue columns
   channel_summary_events.sql     ← For event-level tables (send/open/click)

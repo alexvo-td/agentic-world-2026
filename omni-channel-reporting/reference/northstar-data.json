@@ -1,0 +1,730 @@
+{
+  "meta": {
+    "company": "Northstar Home Living",
+    "database": "northstar_home_living_demo",
+    "generatedAt": "__TODAY__",
+    "dataRange": {
+      "from": "2026-08-13",
+      "to": "2026-09-15"
+    }
+  },
+  "kpis": {
+    "totalSpend": 112615,
+    "totalRevenue": 460831,
+    "avgRoas": 4.09,
+    "activeCampaigns": 8,
+    "totalCustomers": 10000,
+    "avgConvRate": 22.9
+  },
+  "channels": [
+    {
+      "name": "push",
+      "label": "Push",
+      "role": "Re-engagement",
+      "color": "#C466D4",
+      "spend": 29652,
+      "revenue": 118610,
+      "roas": 4.0,
+      "nativeKpis": [
+        {
+          "label": "Total Sends",
+          "value": 2500,
+          "format": "#"
+        },
+        {
+          "label": "Open Rate",
+          "value": 100.0,
+          "format": "%"
+        },
+        {
+          "label": "Click Rate",
+          "value": 100.0,
+          "format": "%"
+        }
+      ],
+      "campaigns": [
+        {
+          "name": "Craft Room Organization",
+          "segment": "All",
+          "revenue": 62798,
+          "roas": 4.0,
+          "metrics": [
+            301,
+            1250,
+            100.0,
+            100.0
+          ]
+        },
+        {
+          "name": "Winback - Your Next Project",
+          "segment": "All",
+          "revenue": 55812,
+          "roas": 4.0,
+          "metrics": [
+            276,
+            1250,
+            100.0,
+            100.0
+          ]
+        }
+      ],
+      "columns": [
+        "Campaign",
+        "Segment",
+        "Revenue",
+        "ROAS",
+        "Conversions",
+        "Sends",
+        "Open Rate",
+        "Click Rate"
+      ],
+      "columnFormats": [
+        "",
+        "",
+        "$",
+        "x",
+        "",
+        "#",
+        "%",
+        "%"
+      ],
+      "roasBySegment": [
+        {
+          "segment": "Gold",
+          "value": 4.0
+        },
+        {
+          "segment": "Non-Loyalty",
+          "value": 4.0
+        },
+        {
+          "segment": "Platinum",
+          "value": 4.0
+        },
+        {
+          "segment": "Silver",
+          "value": 4.0
+        }
+      ],
+      "insight": "Push drives Re-engagement with 4.0x ROAS. Craft Room Organization is the top campaign. Gold leads at 4.0x."
+    },
+    {
+      "name": "in_app",
+      "label": "In-App",
+      "role": "Engagement",
+      "color": "#9DCC4C",
+      "spend": 41490,
+      "revenue": 118544,
+      "roas": 2.86,
+      "nativeKpis": [
+        {
+          "label": "Total Impressions",
+          "value": 2500,
+          "format": "#"
+        },
+        {
+          "label": "Open Rate",
+          "value": 100.0,
+          "format": "%"
+        },
+        {
+          "label": "Click Rate",
+          "value": 100.0,
+          "format": "%"
+        }
+      ],
+      "campaigns": [
+        {
+          "name": "Holiday Entertaining Preview",
+          "segment": "All",
+          "revenue": 62916,
+          "roas": 2.86,
+          "metrics": [
+            1250,
+            100.0,
+            100.0,
+            24.1
+          ]
+        },
+        {
+          "name": "Seasonal Project Inspiration",
+          "segment": "All",
+          "revenue": 55628,
+          "roas": 2.86,
+          "metrics": [
+            1250,
+            100.0,
+            100.0,
+            22.1
+          ]
+        }
+      ],
+      "columns": [
+        "Campaign",
+        "Segment",
+        "Revenue",
+        "ROAS",
+        "Impressions",
+        "Open Rate",
+        "Click Rate",
+        "Conv Rate"
+      ],
+      "columnFormats": [
+        "",
+        "",
+        "$",
+        "x",
+        "#",
+        "%",
+        "%",
+        "%"
+      ],
+      "roasBySegment": [
+        {
+          "segment": "Non-Loyalty",
+          "value": 2.86
+        },
+        {
+          "segment": "Platinum",
+          "value": 2.86
+        },
+        {
+          "segment": "Silver",
+          "value": 2.86
+        }
+      ],
+      "insight": "In-App drives Engagement with 2.86x ROAS. Holiday Entertaining Preview is the top campaign. Non-Loyalty leads at 2.86x."
+    },
+    {
+      "name": "sms",
+      "label": "SMS",
+      "role": "Retention / Rescue",
+      "color": "#8753FF",
+      "spend": 24897,
+      "revenue": 113168,
+      "roas": 4.55,
+      "nativeKpis": [
+        {
+          "label": "Total Sends",
+          "value": 2500,
+          "format": "#"
+        },
+        {
+          "label": "Open Rate",
+          "value": 100.0,
+          "format": "%"
+        },
+        {
+          "label": "Click Rate",
+          "value": 100.0,
+          "format": "%"
+        }
+      ],
+      "campaigns": [
+        {
+          "name": "Spring Refresh - Accent Furniture",
+          "segment": "All",
+          "revenue": 61044,
+          "roas": 4.55,
+          "metrics": [
+            301,
+            1250,
+            100.0,
+            100.0
+          ]
+        },
+        {
+          "name": "Home Decor Back in Stock",
+          "segment": "All",
+          "revenue": 52124,
+          "roas": 4.55,
+          "metrics": [
+            268,
+            1250,
+            100.0,
+            100.0
+          ]
+        }
+      ],
+      "columns": [
+        "Campaign",
+        "Segment",
+        "Revenue",
+        "ROAS",
+        "Conversions",
+        "Sends",
+        "Open Rate",
+        "Click Rate"
+      ],
+      "columnFormats": [
+        "",
+        "",
+        "$",
+        "x",
+        "",
+        "#",
+        "%",
+        "%"
+      ],
+      "roasBySegment": [
+        {
+          "segment": "Non-Loyalty",
+          "value": 4.55
+        },
+        {
+          "segment": "Platinum",
+          "value": 4.55
+        },
+        {
+          "segment": "Silver",
+          "value": 4.55
+        }
+      ],
+      "insight": "SMS drives Retention / Rescue with 4.55x ROAS. Spring Refresh - Accent Furniture is the top campaign. Non-Loyalty leads at 4.55x."
+    },
+    {
+      "name": "email",
+      "label": "Email",
+      "role": "Retention",
+      "color": "#494FFF",
+      "spend": 16576,
+      "revenue": 110509,
+      "roas": 6.67,
+      "nativeKpis": [
+        {
+          "label": "Open Rate",
+          "value": 100.0,
+          "format": "%"
+        },
+        {
+          "label": "Click Rate",
+          "value": 100.0,
+          "format": "%"
+        },
+        {
+          "label": "Conv Rate",
+          "value": 22.8,
+          "format": "%"
+        }
+      ],
+      "campaigns": [
+        {
+          "name": "Storage and Organization Ideas",
+          "segment": "All",
+          "revenue": 59773,
+          "roas": 6.67,
+          "metrics": [
+            301,
+            100.0,
+            100.0,
+            24.1
+          ]
+        },
+        {
+          "name": "Loyalty Points Reminder",
+          "segment": "All",
+          "revenue": 50736,
+          "roas": 6.67,
+          "metrics": [
+            268,
+            100.0,
+            100.0,
+            21.4
+          ]
+        }
+      ],
+      "columns": [
+        "Campaign",
+        "Segment",
+        "Revenue",
+        "ROAS",
+        "Conversions",
+        "Open Rate",
+        "Click Rate",
+        "Conv Rate"
+      ],
+      "columnFormats": [
+        "",
+        "",
+        "$",
+        "x",
+        "",
+        "",
+        "%",
+        "%"
+      ],
+      "roasBySegment": [
+        {
+          "segment": "Gold",
+          "value": 6.67
+        },
+        {
+          "segment": "Non-Loyalty",
+          "value": 6.67
+        },
+        {
+          "segment": "Platinum",
+          "value": 6.67
+        },
+        {
+          "segment": "Silver",
+          "value": 6.67
+        }
+      ],
+      "insight": "Email drives Retention with 6.67x ROAS. Storage and Organization Ideas is the top campaign. Gold leads at 6.67x."
+    }
+  ],
+  "segmentHeatmap": [
+    {
+      "segment": "Gold",
+      "values": {
+        "email": 6.67,
+        "in_app": 0,
+        "push": 4.0,
+        "sms": 0
+      }
+    },
+    {
+      "segment": "Non-Loyalty",
+      "values": {
+        "email": 6.67,
+        "in_app": 2.86,
+        "push": 4.0,
+        "sms": 4.55
+      }
+    },
+    {
+      "segment": "Platinum",
+      "values": {
+        "email": 6.67,
+        "in_app": 2.86,
+        "push": 4.0,
+        "sms": 4.55
+      }
+    },
+    {
+      "segment": "Silver",
+      "values": {
+        "email": 6.67,
+        "in_app": 2.86,
+        "push": 4.0,
+        "sms": 4.55
+      }
+    }
+  ],
+  "journeys": {
+    "kpis": {
+      "totalEnrolled": 4500,
+      "goalAchieved": 661,
+      "goalAchievedPct": 14.7,
+      "revenueAttributed": 114022,
+      "stage1Conversion": 9.5,
+      "stage2Escalation": 58,
+      "avgDaysToConvert": 8.4
+    },
+    "cards": [
+      {
+        "name": "Lapsed Customer Reactivation",
+        "segment": "Lapsed 90+ Days",
+        "segmentSize": 2100,
+        "overallConversion": 14.7,
+        "channelBadge": "Email + App -> Social/Search -> VIP SMS",
+        "funnel": [
+          {
+            "stage": "Entered",
+            "count": 2100,
+            "pct": 100
+          },
+          {
+            "stage": "Stage 1 Active",
+            "count": 1470,
+            "pct": 70.0
+          },
+          {
+            "stage": "Stage 2 Escalated",
+            "count": 705,
+            "pct": 33.6
+          },
+          {
+            "stage": "Stage 3 Escalated",
+            "count": 306,
+            "pct": 14.6
+          },
+          {
+            "stage": "Converted",
+            "count": 308,
+            "pct": 14.7
+          }
+        ],
+        "stageBreakdown": [
+          {
+            "stage": "Stage 1: Email + App",
+            "entered": 1470,
+            "converted": 189,
+            "rate": 12.9,
+            "roas": 8.2,
+            "channel": "Email + App Push"
+          },
+          {
+            "stage": "Stage 2: Social + Search",
+            "entered": 705,
+            "converted": 94,
+            "rate": 13.3,
+            "roas": 3.8,
+            "channel": "Meta + Google"
+          },
+          {
+            "stage": "Stage 3: VIP SMS",
+            "entered": 306,
+            "converted": 25,
+            "rate": 8.2,
+            "roas": 2.1,
+            "channel": "SMS Exclusive"
+          }
+        ],
+        "decisions": [
+          {
+            "name": "Has App / Mobile Consent",
+            "qualifyPct": 35,
+            "qualifyConv": 15.2,
+            "fallbackConv": 7.1
+          },
+          {
+            "name": "High LTV / Propensity",
+            "qualifyPct": 40,
+            "qualifyConv": 18.0,
+            "fallbackConv": 9.5
+          }
+        ],
+        "revenueByStage": [
+          {
+            "stage": "Stage 1",
+            "revenue": 30815,
+            "pct": 58
+          },
+          {
+            "stage": "Stage 2",
+            "revenue": 17002,
+            "pct": 32
+          },
+          {
+            "stage": "Stage 3",
+            "revenue": 5313,
+            "pct": 10
+          }
+        ]
+      },
+      {
+        "name": "High-Value Cross-Sell",
+        "segment": "Gold + Platinum, 1 Category",
+        "segmentSize": 1500,
+        "overallConversion": 14.7,
+        "channelBadge": "Email + App -> Social/Search -> VIP SMS",
+        "funnel": [
+          {
+            "stage": "Entered",
+            "count": 1500,
+            "pct": 100
+          },
+          {
+            "stage": "Stage 1 Active",
+            "count": 1050,
+            "pct": 70.0
+          },
+          {
+            "stage": "Stage 2 Escalated",
+            "count": 503,
+            "pct": 33.5
+          },
+          {
+            "stage": "Stage 3 Escalated",
+            "count": 218,
+            "pct": 14.5
+          },
+          {
+            "stage": "Converted",
+            "count": 221,
+            "pct": 14.7
+          }
+        ],
+        "stageBreakdown": [
+          {
+            "stage": "Stage 1: Email + App",
+            "entered": 1050,
+            "converted": 135,
+            "rate": 12.9,
+            "roas": 8.2,
+            "channel": "Email + App Push"
+          },
+          {
+            "stage": "Stage 2: Social + Search",
+            "entered": 503,
+            "converted": 68,
+            "rate": 13.5,
+            "roas": 3.8,
+            "channel": "Meta + Google"
+          },
+          {
+            "stage": "Stage 3: VIP SMS",
+            "entered": 218,
+            "converted": 18,
+            "rate": 8.3,
+            "roas": 2.1,
+            "channel": "SMS Exclusive"
+          }
+        ],
+        "decisions": [
+          {
+            "name": "Has App / Mobile Consent",
+            "qualifyPct": 35,
+            "qualifyConv": 15.2,
+            "fallbackConv": 7.1
+          },
+          {
+            "name": "High LTV / Propensity",
+            "qualifyPct": 40,
+            "qualifyConv": 18.0,
+            "fallbackConv": 9.5
+          }
+        ],
+        "revenueByStage": [
+          {
+            "stage": "Stage 1",
+            "revenue": 22111,
+            "pct": 58
+          },
+          {
+            "stage": "Stage 2",
+            "revenue": 12199,
+            "pct": 32
+          },
+          {
+            "stage": "Stage 3",
+            "revenue": 3812,
+            "pct": 10
+          }
+        ]
+      },
+      {
+        "name": "New Customer Onboarding",
+        "segment": "First Purchase < 30 Days",
+        "segmentSize": 900,
+        "overallConversion": 14.7,
+        "channelBadge": "Email + App -> Social/Search -> VIP SMS",
+        "funnel": [
+          {
+            "stage": "Entered",
+            "count": 900,
+            "pct": 100
+          },
+          {
+            "stage": "Stage 1 Active",
+            "count": 630,
+            "pct": 70.0
+          },
+          {
+            "stage": "Stage 2 Escalated",
+            "count": 302,
+            "pct": 33.6
+          },
+          {
+            "stage": "Stage 3 Escalated",
+            "count": 131,
+            "pct": 14.6
+          },
+          {
+            "stage": "Converted",
+            "count": 132,
+            "pct": 14.7
+          }
+        ],
+        "stageBreakdown": [
+          {
+            "stage": "Stage 1: Email + App",
+            "entered": 630,
+            "converted": 81,
+            "rate": 12.9,
+            "roas": 8.2,
+            "channel": "Email + App Push"
+          },
+          {
+            "stage": "Stage 2: Social + Search",
+            "entered": 302,
+            "converted": 40,
+            "rate": 13.2,
+            "roas": 3.8,
+            "channel": "Meta + Google"
+          },
+          {
+            "stage": "Stage 3: VIP SMS",
+            "entered": 131,
+            "converted": 11,
+            "rate": 8.4,
+            "roas": 2.1,
+            "channel": "SMS Exclusive"
+          }
+        ],
+        "decisions": [
+          {
+            "name": "Has App / Mobile Consent",
+            "qualifyPct": 35,
+            "qualifyConv": 15.2,
+            "fallbackConv": 7.1
+          },
+          {
+            "name": "High LTV / Propensity",
+            "qualifyPct": 40,
+            "qualifyConv": 18.0,
+            "fallbackConv": 9.5
+          }
+        ],
+        "revenueByStage": [
+          {
+            "stage": "Stage 1",
+            "revenue": 13207,
+            "pct": 58
+          },
+          {
+            "stage": "Stage 2",
+            "revenue": 7286,
+            "pct": 32
+          },
+          {
+            "stage": "Stage 3",
+            "revenue": 2277,
+            "pct": 10
+          }
+        ]
+      }
+    ],
+    "crossJourney": {
+      "stage1Coverage": 95.2,
+      "blendedRoas": 9.4,
+      "stage3RescueValue": 11402,
+      "purchaseWindowGap": {
+        "avgDaysToRepurchase": 72,
+        "journeyWindow": 19
+      }
+    },
+    "optimizations": [
+      {
+        "title": "Extend journey window past Stage 3",
+        "estRevenue": 38812,
+        "description": "The 3-stage journey spans ~19 days but the natural repeat purchase window is 72 days. A Stage 4 long-tail nurture could recover 4-6% of non-converters.",
+        "priority": "high"
+      },
+      {
+        "title": "Increase Stage 1 App Push reach",
+        "estRevenue": 23288,
+        "description": "Only 28-38% qualify for App Push. Growing app install rate by 10pp lifts Stage 1 conversion ~2pp at zero media cost.",
+        "priority": "high"
+      },
+      {
+        "title": "Lower Stage 2 LTV threshold",
+        "estRevenue": 15525,
+        "description": "Including the next LTV tier adds ~15-20% more customers to the higher-converting Search branch.",
+        "priority": "medium"
+      }
+    ]
+  }
+}
